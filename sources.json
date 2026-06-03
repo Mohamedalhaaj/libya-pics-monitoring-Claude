@@ -1,8 +1,62 @@
 {
   "sources": [
     {
+      "id": "al_wasat",
+      "name": "Al Wasat",
+      "language": "ar",
+      "country_focus": "Libya",
+      "url": "https://alwasat.ly/news/libya",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": false,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "rna_reportage",
+      "name": "RNA Reportage",
+      "language": "ar",
+      "country_focus": "Libya",
+      "url": "https://reportage.ly/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": false,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "ean_libya",
+      "name": "Ean Libya",
+      "language": "ar",
+      "country_focus": "Libya",
+      "url": "https://www.eanlibya.com/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": false,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
       "id": "libya_observer",
-      "name": "The Libya Observer",
+      "name": "Libya Observer",
       "language": "en",
       "country_focus": "Libya",
       "url": "https://libyaobserver.ly/news",
@@ -10,12 +64,192 @@
       "enabled": true,
       "require_keyword_match": false,
       "selectors": {
-        "article": "article, .views-row, .node",
-        "title": "h2 a, h3 a, .field-content a",
-        "url": "h2 a, h3 a, .field-content a",
-        "summary": ".field--name-body, .views-field-body, p",
-        "date": "time, .date, .created",
-        "section": ".category, .field--name-field-category"
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "libya_review",
+      "name": "Libya Review",
+      "language": "en",
+      "country_focus": "Libya",
+      "url": "https://libyareview.com/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": false,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "al_shahed",
+      "name": "Al Shahed",
+      "language": "ar",
+      "country_focus": "Libya",
+      "url": "https://lywitness.com/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": false,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "al_marsad",
+      "name": "Al Marsad",
+      "language": "ar",
+      "country_focus": "Libya",
+      "url": "https://almarsad.co/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": false,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "libya_24",
+      "name": "Libya 24",
+      "language": "ar",
+      "country_focus": "Libya",
+      "url": "https://libya24.tv/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": false,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "al_saaa_24",
+      "name": "Al Saaa 24",
+      "language": "ar",
+      "country_focus": "Libya",
+      "url": "https://alsaaa24.net/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": false,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "address_libya",
+      "name": "Address Libya",
+      "language": "ar",
+      "country_focus": "Libya",
+      "url": "https://www.addresslibya.com/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": false,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "lana",
+      "name": "LANA",
+      "language": "ar",
+      "country_focus": "Libya",
+      "url": "https://lana.gov.ly/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": false,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "asharq_al_awsat",
+      "name": "Asharq Al Awsat",
+      "language": "ar",
+      "country_focus": "Libya",
+      "url": "https://aawsat.com/tags/%D9%84%D9%8A%D8%A8%D9%8A%D8%A7",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": true,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "fawasel_media",
+      "name": "Fawasel Media",
+      "language": "ar",
+      "country_focus": "Libya",
+      "url": "https://fawaselmedia.com/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": false,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "tanasuh",
+      "name": "Tanasuh",
+      "language": "ar",
+      "country_focus": "Libya",
+      "url": "https://tanasuh.tv/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": false,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
       }
     },
     {
@@ -28,48 +262,336 @@
       "enabled": true,
       "require_keyword_match": false,
       "selectors": {
-        "article": "article, .post, .td_module_wrap",
-        "title": "h2 a, h3 a, .entry-title a",
-        "url": "h2 a, h3 a, .entry-title a",
-        "summary": ".td-excerpt, .entry-summary, p",
-        "date": "time, .entry-date",
-        "section": ".cat-links, .td-post-category"
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
       }
     },
     {
-      "id": "aljazeera_ar_libya",
+      "id": "al_menassa",
+      "name": "Al Menassa",
+      "language": "ar",
+      "country_focus": "Libya",
+      "url": "https://almenassa.ly/wide-web-1/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": false,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "al_mashhad",
+      "name": "Al Mashhad",
+      "language": "ar",
+      "country_focus": "Libya",
+      "url": "https://www.almashhad.com/latest/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": true,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "libya_al_ahrar",
+      "name": "Libya Al Ahrar",
+      "language": "ar",
+      "country_focus": "Libya",
+      "url": "https://libyaalahrar.tv/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": false,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "libya_update",
+      "name": "Libya Update",
+      "language": "en",
+      "country_focus": "Libya",
+      "url": "https://libyaupdate.com/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": false,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "akhbar_libya_24",
+      "name": "Akhbar Libya 24",
+      "language": "ar",
+      "country_focus": "Libya",
+      "url": "https://akhbarlibya24.net/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": false,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "al_sabaah",
+      "name": "Al Sabaah",
+      "language": "ar",
+      "country_focus": "Libya",
+      "url": "https://alsabaah.ly/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": false,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "al_ain",
+      "name": "Al Ain",
+      "language": "ar",
+      "country_focus": "Libya",
+      "url": "https://al-ain.com/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": true,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "arabi21",
+      "name": "Arabi21",
+      "language": "ar",
+      "country_focus": "Libya",
+      "url": "https://arabi21.com/stories/t/49474/0/%D9%84%D9%8A%D8%A8%D9%8A%D8%A7",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": true,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "new_arab",
+      "name": "New Arab",
+      "language": "en",
+      "country_focus": "Libya",
+      "url": "https://www.newarab.com/tag/libya",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": true,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "ansa",
+      "name": "ANSA",
+      "language": "en",
+      "country_focus": "Libya",
+      "url": "https://www.ansa.it/english/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": true,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "anadolu_agency",
+      "name": "Anadolu Agency",
+      "language": "en",
+      "country_focus": "Libya",
+      "url": "https://www.aa.com.tr/en",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": true,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "the_guardian",
+      "name": "The Guardian",
+      "language": "en",
+      "country_focus": "Libya",
+      "url": "https://www.theguardian.com/world/libya",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": true,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "bss_news",
+      "name": "BSS News",
+      "language": "en",
+      "country_focus": "Libya",
+      "url": "https://www.bssnews.net/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": true,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "gazettengr",
+      "name": "Gazettengr",
+      "language": "en",
+      "country_focus": "Libya",
+      "url": "https://gazettengr.com/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": true,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "ch_aviation",
+      "name": "CH Aviation",
+      "language": "en",
+      "country_focus": "Libya",
+      "url": "https://www.ch-aviation.com/news",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": true,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "volcanodiscovery",
+      "name": "Volcanodiscovery",
+      "language": "en",
+      "country_focus": "Libya",
+      "url": "https://www.volcanodiscovery.com/earthquakes/libya.html",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": true,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "reuters",
+      "name": "Reuters",
+      "language": "en",
+      "country_focus": "Libya",
+      "url": "https://www.reuters.com/world/africa/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": true,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
+      }
+    },
+    {
+      "id": "al_jazeera_ar_libya",
       "name": "Al Jazeera Arabic - Libya",
       "language": "ar",
       "country_focus": "Libya",
-      "url": "https://www.aljazeera.net/where/libya/",
+      "url": "https://www.aljazeera.net/where/mideast/arab/libya/",
       "parser": "generic_list",
       "enabled": true,
       "require_keyword_match": true,
       "selectors": {
-        "article": "article, .gc, .u-clickable-card",
-        "title": "h3 a, h2 a, a",
-        "url": "h3 a, h2 a, a",
-        "summary": "p, .gc__excerpt",
-        "date": "time",
-        "section": ".gc__label, .article-card__category"
-      }
-    },
-    {
-      "id": "bbc_arabic_libya",
-      "name": "BBC Arabic - Libya",
-      "language": "ar",
-      "country_focus": "Libya",
-      "url": "https://www.bbc.com/arabic/topics/cq23pdgvyl7t",
-      "parser": "generic_list",
-      "enabled": true,
-      "require_keyword_match": true,
-      "selectors": {
-        "article": "article, [data-testid='card-text-wrapper'], .bbc-1kz5jpr",
-        "title": "h2 a, h3 a, a",
-        "url": "h2 a, h3 a, a",
-        "summary": "p",
-        "date": "time",
-        "section": "[data-testid='card-metadata-tag']"
+        "article": "article, .post, .td_module_wrap, .jeg_post, .elementor-post, .views-row, .node, .gc, .u-clickable-card, .story, .card, li",
+        "title": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "url": "h1 a, h2 a, h3 a, h4 a, .entry-title a, .post-title a, .td-module-title a, .jeg_post_title a, .card-title a, a",
+        "summary": ".entry-summary, .td-excerpt, .excerpt, .post-excerpt, .summary, p",
+        "date": "time, .entry-date, .date, .created, .post-date",
+        "section": ".category, .cat-links, .td-post-category, .post-category, .tag"
       }
     }
   ]
