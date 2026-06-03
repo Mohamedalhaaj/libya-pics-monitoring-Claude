@@ -1,0 +1,76 @@
+{
+  "sources": [
+    {
+      "id": "libya_observer",
+      "name": "The Libya Observer",
+      "language": "en",
+      "country_focus": "Libya",
+      "url": "https://libyaobserver.ly/news",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": false,
+      "selectors": {
+        "article": "article, .views-row, .node",
+        "title": "h2 a, h3 a, .field-content a",
+        "url": "h2 a, h3 a, .field-content a",
+        "summary": ".field--name-body, .views-field-body, p",
+        "date": "time, .date, .created",
+        "section": ".category, .field--name-field-category"
+      }
+    },
+    {
+      "id": "libya_herald",
+      "name": "Libya Herald",
+      "language": "en",
+      "country_focus": "Libya",
+      "url": "https://libyaherald.com/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": false,
+      "selectors": {
+        "article": "article, .post, .td_module_wrap",
+        "title": "h2 a, h3 a, .entry-title a",
+        "url": "h2 a, h3 a, .entry-title a",
+        "summary": ".td-excerpt, .entry-summary, p",
+        "date": "time, .entry-date",
+        "section": ".cat-links, .td-post-category"
+      }
+    },
+    {
+      "id": "aljazeera_ar_libya",
+      "name": "Al Jazeera Arabic - Libya",
+      "language": "ar",
+      "country_focus": "Libya",
+      "url": "https://www.aljazeera.net/where/libya/",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": true,
+      "selectors": {
+        "article": "article, .gc, .u-clickable-card",
+        "title": "h3 a, h2 a, a",
+        "url": "h3 a, h2 a, a",
+        "summary": "p, .gc__excerpt",
+        "date": "time",
+        "section": ".gc__label, .article-card__category"
+      }
+    },
+    {
+      "id": "bbc_arabic_libya",
+      "name": "BBC Arabic - Libya",
+      "language": "ar",
+      "country_focus": "Libya",
+      "url": "https://www.bbc.com/arabic/topics/cq23pdgvyl7t",
+      "parser": "generic_list",
+      "enabled": true,
+      "require_keyword_match": true,
+      "selectors": {
+        "article": "article, [data-testid='card-text-wrapper'], .bbc-1kz5jpr",
+        "title": "h2 a, h3 a, a",
+        "url": "h2 a, h3 a, a",
+        "summary": "p",
+        "date": "time",
+        "section": "[data-testid='card-metadata-tag']"
+      }
+    }
+  ]
+}
