@@ -1,8 +1,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
+
+
+def _utcnow() -> datetime:
+    # Naive UTC (datetime.utcnow() is deprecated in Python 3.12+).
+    return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
 @dataclass(slots=True)
@@ -34,6 +39,60 @@ class Article:
 
 
 @dataclass(slots=True)
+class HeadlineSource:
+    """A single outlet that reported a headline, as cited in the report."""
+
+    name: str
+    language: str = "en"
+    url: str = ""
+
+    def render(self) -> str:
+        """`Source Name (Arabic)` style citation used in the Word report."""
+        label = self.name
+        if self.language == "ar":
+            label = f"{label} (Arabic)"
+        return label
+
+
+@dataclass(slots=True)
+class ReportHeadline:
+    """One editorial bullet: an English headline plus its cited sources."""
+
+    text: str
+    sources: list[HeadlineSource] = field(default_factory=list)
+
+    def render_sources(self) -> str:
+        return " / ".join(source.render() for source in self.sources)
+
+
+@dataclass(slots=True)
+class ReportSubsection:
+    name: str
+    headlines: list[ReportHeadline] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class ReportSection:
+    name: str
+    subsections: list[ReportSubsection] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class StructuredReport:
+    """A full editorial report ready to render in the PICS Word format."""
+
+    report_date: str
+    sections: list[ReportSection] = field(default_factory=list)
+
+    def total_headlines(self) -> int:
+        return sum(
+            len(subsection.headlines)
+            for section in self.sections
+            for subsection in section.subsections
+        )
+
+
+@dataclass(slots=True)
 class SourceVerification:
     source_id: str
     source_name: str
@@ -41,7 +100,7 @@ class SourceVerification:
     status: str
     articles_found: int = 0
     error: str = ""
-    checked_at: datetime = field(default_factory=datetime.utcnow)
+    checked_at: datetime = field(default_factory=_utcnow)
 
     def to_row(self) -> dict[str, Any]:
         return {

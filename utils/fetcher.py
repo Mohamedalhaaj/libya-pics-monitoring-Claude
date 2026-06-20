@@ -4,9 +4,24 @@ import asyncio
 import logging
 from dataclasses import dataclass
 
-from playwright.async_api import Browser, Page, async_playwright
+from playwright.async_api import Browser, BrowserContext, Page, async_playwright
 
 logger = logging.getLogger(__name__)
+
+# A realistic desktop Chrome identity. Many news sites reject the default
+# Playwright/headless user-agent outright (403 / challenge pages), which is why
+# major outlets returned nothing on a bare browser.
+USER_AGENT = (
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+)
+EXTRA_HEADERS = {
+    "Accept-Language": "ar,en-US;q=0.9,en;q=0.8",
+    "Accept": (
+        "text/html,application/xhtml+xml,application/xml;q=0.9,"
+        "image/avif,image/webp,*/*;q=0.8"
+    ),
+}
 
 
 @dataclass(slots=True)
@@ -23,38 +38,77 @@ class BrowserFetcher:
         retries: int = 3,
         retry_delay_seconds: float = 2.0,
         headless: bool = True,
+        cdp_url: str | None = None,
     ) -> None:
         self.timeout_ms = timeout_ms
         self.retries = retries
         self.retry_delay_seconds = retry_delay_seconds
         self.headless = headless
+        # When set (e.g. http://localhost:9222), fetch through an already-running
+        # Chrome via the DevTools protocol instead of launching a fresh browser.
+        # This uses the real browser's fingerprint/cookies, which is the only
+        # way to reach a few bot-sensitive, JS-rendered sources.
+        self.cdp_url = cdp_url
         self._playwright = None
         self._browser: Browser | None = None
+        self._context: BrowserContext | None = None
+        self._owns_browser = True
+        self._owns_context = True
 
     async def __aenter__(self) -> "BrowserFetcher":
         self._playwright = await async_playwright().start()
-        self._browser = await self._playwright.chromium.launch(headless=self.headless)
+        if self.cdp_url:
+            self._browser = await self._playwright.chromium.connect_over_cdp(self.cdp_url)
+            self._owns_browser = False  # the user's browser — never close it
+            if self._browser.contexts:
+                self._context = self._browser.contexts[0]
+                self._owns_context = False
+            else:
+                self._context = await self._browser.new_context()
+                self._owns_context = True
+        else:
+            self._browser = await self._playwright.chromium.launch(
+                headless=self.headless,
+                args=["--disable-blink-features=AutomationControlled"],
+            )
+            self._context = await self._browser.new_context(
+                user_agent=USER_AGENT,
+                locale="ar-LY",
+                viewport={"width": 1366, "height": 900},
+                extra_http_headers=EXTRA_HEADERS,
+            )
         return self
 
     async def __aexit__(self, *_args: object) -> None:
-        if self._browser:
+        if self._context and self._owns_context:
+            await self._context.close()
+        if self._browser and self._owns_browser:
             await self._browser.close()
         if self._playwright:
             await self._playwright.stop()
 
     async def fetch(self, url: str, wait_for_selector: str | None = None) -> FetchResult:
-        if not self._browser:
+        if not self._context:
             raise RuntimeError("BrowserFetcher must be used as an async context manager")
 
         last_error: Exception | None = None
         for attempt in range(1, self.retries + 1):
             page: Page | None = None
             try:
-                page = await self._browser.new_page()
+                page = await self._context.new_page()
                 page.set_default_timeout(self.timeout_ms)
                 await page.goto(url, wait_until="domcontentloaded", timeout=self.timeout_ms)
                 if wait_for_selector:
                     await page.wait_for_selector(wait_for_selector, timeout=self.timeout_ms)
+                # Many sources render their article list client-side. The
+                # configured selector is often a generic tag (e.g. `li`) that
+                # already exists in the static shell, so the wait above can
+                # resolve before the list populates. Give the network a short,
+                # best-effort chance to settle so JS-rendered cards are present.
+                try:
+                    await page.wait_for_load_state("networkidle", timeout=min(self.timeout_ms, 8000))
+                except Exception:
+                    pass
                 html = await page.content()
                 return FetchResult(url=url, html=html, final_url=page.url)
             except Exception as exc:  # Playwright raises several transport-specific subclasses.

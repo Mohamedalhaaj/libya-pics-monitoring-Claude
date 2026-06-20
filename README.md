@@ -11,8 +11,31 @@ Python media monitoring system for collecting Libya-related headlines from appro
 - Date filtering with optional handling for undated source items
 - CSV output for collected headlines
 - CSV verification table for source checks
-- Word report generation for daily reporting
+- Claude-powered editorial enrichment (translation, thematic categorisation,
+  cross-source deduplication) producing a Word report in the UNSMIL/PICS
+  `Libya News Headlines` format
 - Logging and retry handling
+
+## How it works
+
+The pipeline has two stages:
+
+1. **Collection** — Playwright + BeautifulSoup scrape candidate headlines from
+   the approved sources and write `libya_media_headlines.csv` and the source
+   verification table.
+2. **Editorial enrichment** — the collected articles are sent to the Claude API
+   (`utils/enrich.py`), which translates Arabic headlines to English, sorts them
+   into the fixed 8-section taxonomy, and merges the same story reported by
+   multiple outlets into one bullet citing every source. The result is rendered
+   as the Word report.
+
+The enrichment step needs an API key in `ANTHROPIC_API_KEY`. If the key (or the
+`anthropic` package) is missing, or you pass `--no-enrich`, the report falls
+back to a mechanical source-grouped layout that has the correct structure but
+leaves headlines in their original wording.
+
+See [`docs/report_methodology.md`](docs/report_methodology.md) for the editorial
+rules and [`samples/`](samples) for reference output products.
 
 ## Repository Structure
 
@@ -44,6 +67,12 @@ pip install -r requirements.txt
 playwright install chromium
 ```
 
+Set an API key for editorial enrichment (optional but recommended):
+
+```bash
+export ANTHROPIC_API_KEY="sk-ant-..."
+```
+
 ## Usage
 
 Run the monitor for a specific date range:
@@ -52,11 +81,37 @@ Run the monitor for a specific date range:
 python scraper.py --start-date 2026-06-01 --end-date 2026-06-03
 ```
 
+Set the report title date, choose a model, or skip enrichment entirely:
+
+```bash
+python scraper.py --start-date 2026-06-03 --end-date 2026-06-03 --report-date "3 June"
+python scraper.py --no-enrich          # mechanical layout, no API calls
+python scraper.py --model claude-opus-4-8
+```
+
 Add custom keywords:
 
 ```bash
 python scraper.py --keyword "elections" --keyword "انتخابات"
 ```
+
+### Bot-protected / JS-rendered sources (real-browser fetch)
+
+A few sources (e.g. Akhbar Libya 24, New Arab, Reuters) block the headless
+browser or only render via heavy client-side JS. Fetch those through a real
+Chrome over the DevTools protocol:
+
+```bash
+# 1. Launch Chrome with a debugging port (a separate profile avoids disturbing
+#    your normal session):
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+  --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-scraper-profile about:blank
+
+# 2. Point the scraper at it:
+python scraper.py --cdp-url http://localhost:9222 --start-date 2026-06-20 --end-date 2026-06-20
+```
+
+The headless default is faster; use `--cdp-url` for maximum source coverage.
 
 Keep source items that do not expose a machine-readable date:
 

@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import unicodedata
 from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
 from parsers.base import BaseParser
-from utils.dates import parse_article_date
+from utils.dates import parse_article_date, parse_date_from_url
 from utils.models import Article
 
 
@@ -23,9 +24,20 @@ class GenericListParser(BaseParser):
             if not title:
                 continue
 
-            link_node = title_node if title_node.name == "a" else item.select_one(selectors.get("url", "a[href]"))
+            # Resolve the link. Three card shapes: the title is itself a link,
+            # the card element is itself a link (common on Next.js/Tailwind
+            # sites where the whole card is one <a>), or a separate url selector.
+            if title_node.name == "a":
+                link_node = title_node
+            elif item.name == "a":
+                link_node = item
+            else:
+                link_node = item.select_one(selectors.get("url", "a[href]"))
             href = link_node.get("href") if link_node else ""
-            url = urljoin(self.source["url"], href) if href else self.source["url"]
+            # Leave the URL empty when the item exposes no real link, rather than
+            # pointing every link-less item at the listing page. Otherwise dedup
+            # (keyed on source_id + url) would collapse unrelated items together.
+            url = urljoin(self.source["url"], href) if href else ""
 
             summary = ""
             if selectors.get("summary"):
@@ -57,7 +69,7 @@ class GenericListParser(BaseParser):
                     country_focus=self.source.get("country_focus", "Libya"),
                     title=title,
                     url=url,
-                    published_at=parse_article_date(date_value),
+                    published_at=parse_article_date(date_value) or parse_date_from_url(url),
                     summary=summary,
                     section=section,
                     matched_keywords=matched_keywords,
@@ -67,9 +79,15 @@ class GenericListParser(BaseParser):
         return deduplicate_articles(articles)
 
 
+def _normalize(text: str) -> str:
+    # NFKC unifies presentation/compatibility Arabic codepoints so the same
+    # word matches regardless of how the source encoded it.
+    return unicodedata.normalize("NFKC", text).casefold()
+
+
 def match_keywords(text: str, keywords: list[str]) -> list[str]:
-    normalized = text.casefold()
-    return [keyword for keyword in keywords if keyword.casefold() in normalized]
+    normalized = _normalize(text)
+    return [keyword for keyword in keywords if _normalize(keyword) in normalized]
 
 
 def deduplicate_articles(articles: list[Article]) -> list[Article]:
