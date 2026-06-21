@@ -22,6 +22,9 @@ Python media monitoring system for collecting Libya-related headlines from appro
 - Claude-powered editorial enrichment (translation, thematic categorisation,
   cross-source deduplication) producing a Word report in the UNSMIL/PICS
   `Libya News Headlines` format
+- **Quality evaluation** (`evaluate.py`): scores any generated report 0-100
+  against a profile learned from the gold `samples/` reports (structure, style
+  conformance, and source-coverage recall), so "did it get better?" is a number
 - Logging and retry handling
 
 ## How it works
@@ -54,6 +57,7 @@ rules and [`samples/`](samples) for reference output products.
 ```text
 .
 ├── scraper.py
+├── evaluate.py
 ├── sources.json
 ├── requirements.txt
 ├── README.md
@@ -65,7 +69,8 @@ rules and [`samples/`](samples) for reference output products.
 ├── tests/
 │   ├── test_cleaning.py
 │   ├── test_dates.py
-│   └── test_feed_parser.py
+│   ├── test_feed_parser.py
+│   └── test_report_eval.py
 └── utils/
     ├── cleaning.py
     ├── config.py
@@ -76,6 +81,7 @@ rules and [`samples/`](samples) for reference output products.
     ├── fetcher.py
     ├── logger.py
     ├── models.py
+    ├── report_eval.py
     └── taxonomy.py
 ```
 
@@ -85,6 +91,7 @@ Run the tests (no extra deps; they self-run):
 python tests/test_cleaning.py
 python tests/test_dates.py
 python tests/test_feed_parser.py
+python tests/test_report_eval.py
 ```
 
 ## Installation
@@ -155,6 +162,40 @@ Outputs are written to `output/`:
 - `unsmil_pics_daily_media_report.docx`
 
 Logs are written to `logs/scraper.log`.
+
+## Quality evaluation
+
+`evaluate.py` turns report quality into a tracked number. It learns a profile
+from the gold human reports in `samples/` (bullets per report, % English, dedup
+rate, role-prefix usage, source vocabulary) and scores a target report against
+it:
+
+```bash
+# Score the latest generated report against the gold profile
+python evaluate.py output/unsmil_pics_daily_media_report.docx
+
+# Add source-coverage recall against a date-matched gold report
+python evaluate.py output/unsmil_pics_daily_media_report.docx \
+  --gold ~/Downloads/20260621_headlines.docx
+
+# Inspect the gold corpus profile
+python evaluate.py --profile
+```
+
+The 0-100 total combines three components:
+
+- **structure** — title format, canonical section order, every bullet
+  attributed, zero boilerplate noise.
+- **style conformance** — English ratio, cross-source dedup rate, role-prefix
+  usage and bullet volume, measured against the gold profile.
+- **coverage** *(only with `--gold`)* — share of the gold report's cited outlets
+  present in the target. 100% is not expected: gold reports include one-off wire
+  pickups (AP, Reuters, ABC, …) outside the monitored source list; use it to
+  track the trend, not as an absolute target.
+
+A gold sample scores ~100; an untranslated DRAFT scores high on structure but
+low on style until Claude enrichment runs. Pass `--llm-judge` (needs an API key
+with credit) to add qualitative translation-quality and story-recall scores.
 
 ## Source Configuration
 
