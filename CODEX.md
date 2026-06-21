@@ -17,6 +17,7 @@ playwright install chromium            # only needed for the collection step
 
 # 1. Collect fresh data for the dates (live scrape -> output/libya_media_headlines.csv)
 python scraper.py --start-date START --end-date END --no-enrich
+#    Then VERIFY it before going further — see docs/scraping_sop.md §2 (quality gate).
 
 # 2. Write the report (you, Codex) — see "Write the report" below.
 
@@ -24,6 +25,12 @@ python scraper.py --start-date START --end-date END --no-enrich
 python evaluate.py Libya_News_Headlines_<dates>_PICS.docx \
   --collected output/libya_media_headlines.csv
 ```
+
+**Collection must be clean before anything else** — follow
+[`docs/scraping_sop.md`](docs/scraping_sop.md): prerequisites (network +
+chromium), the quality gate (0 `failed` sources, ≥95% dated, ≥50 outlets, 0
+noise), and the CDP fallback for bot-protected sources. A bad scrape can't be
+rescued by good editing.
 
 > **Live data:** the scraper reads RSS/Atom feeds and Google News, which only
 > return **recent** items. Run it within a few days of the coverage dates — you
