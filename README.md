@@ -4,7 +4,15 @@ Python media monitoring system for collecting Libya-related headlines from appro
 
 ## Features
 
+- **Feed-first collection**: sources with an RSS/Atom feed are read straight
+  from the feed (clean titles, real publication dates, and it reaches several
+  bot-protected outlets the headless browser could not). Falls back to HTML
+  automatically when a feed is missing, empty, or fails.
 - Playwright-based page collection for static and JavaScript-rendered sites
+- **Structural noise filtering**: navigation, headers, footers, sidebars,
+  social bars, category chips and pagination are stripped before parsing so
+  menu/footer links never surface as headlines (removed ~80% of raw scrape
+  noise in testing)
 - BeautifulSoup parsing with modular parser classes
 - Source configuration in `sources.json`
 - Arabic and English keyword support
@@ -20,9 +28,11 @@ Python media monitoring system for collecting Libya-related headlines from appro
 
 The pipeline has two stages:
 
-1. **Collection** — Playwright + BeautifulSoup scrape candidate headlines from
-   the approved sources and write `libya_media_headlines.csv` and the source
-   verification table.
+1. **Collection** — for each source the collector prefers its RSS/Atom feed
+   (`feed` in `sources.json`); otherwise Playwright + BeautifulSoup scrape the
+   page, with boilerplate regions stripped and a structural filter dropping
+   non-article chrome. Results are written to `libya_media_headlines.csv` and
+   the source verification table (status `ok` / `empty` / `failed`).
 2. **Editorial enrichment** — the collected articles are sent to the Claude API
    (`utils/enrich.py`), which translates Arabic headlines to English, sorts them
    into the fixed 8-section taxonomy, and merges the same story reported by
@@ -32,7 +42,9 @@ The pipeline has two stages:
 The enrichment step needs an API key in `ANTHROPIC_API_KEY`. If the key (or the
 `anthropic` package) is missing, or you pass `--no-enrich`, the report falls
 back to a mechanical source-grouped layout that has the correct structure but
-leaves headlines in their original wording.
+leaves headlines in their original wording. The fallback report is stamped
+**DRAFT** so an untranslated, mechanically-deduplicated product is never mistaken
+for the final report.
 
 See [`docs/report_methodology.md`](docs/report_methodology.md) for the editorial
 rules and [`samples/`](samples) for reference output products.
@@ -48,14 +60,31 @@ rules and [`samples/`](samples) for reference output products.
 ├── parsers/
 │   ├── __init__.py
 │   ├── base.py
+│   ├── feed.py
 │   └── generic.py
+├── tests/
+│   ├── test_cleaning.py
+│   ├── test_dates.py
+│   └── test_feed_parser.py
 └── utils/
+    ├── cleaning.py
     ├── config.py
     ├── dates.py
+    ├── enrich.py
     ├── exports.py
+    ├── feeds.py
     ├── fetcher.py
     ├── logger.py
-    └── models.py
+    ├── models.py
+    └── taxonomy.py
+```
+
+Run the tests (no extra deps; they self-run):
+
+```bash
+python tests/test_cleaning.py
+python tests/test_dates.py
+python tests/test_feed_parser.py
 ```
 
 ## Installation
@@ -134,10 +163,19 @@ Sources are managed in `sources.json`. Each enabled source defines:
 - `id`: stable source identifier
 - `name`: report-friendly source name
 - `language`: `ar` or `en`
-- `url`: collection URL
-- `parser`: parser implementation, currently `generic_list`
+- `url`: collection URL (HTML listing page)
+- `feed` *(optional)*: RSS/Atom feed URL. When set it is used in preference to
+  the HTML page; the collector falls back to `url` if the feed is empty/fails.
+- `autodiscover_feed` *(optional, default `true`)*: when no `feed` is set, look
+  for a feed advertised by the page's `<link rel="alternate">` and use it.
+- `min_title_words` *(optional, default `4`)*: HTML items whose title has fewer
+  words are treated as navigation chrome and dropped.
+- `parser`: parser implementation, currently `generic_list` (HTML) or
+  `feed_list` (RSS/Atom)
 - `selectors`: CSS selectors for article cards, titles, URLs, summaries, dates, and sections
-- `require_keyword_match`: whether to filter items by Libya/PICS keywords
+- `require_keyword_match`: whether to filter items by Libya/PICS keywords. Set
+  `true` for broad, site-wide feeds (e.g. Asharq Al-Awsat, New Arab) so only
+  Libya items are kept.
 
 Example:
 

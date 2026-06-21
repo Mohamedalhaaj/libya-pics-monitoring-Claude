@@ -6,6 +6,7 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
 from parsers.base import BaseParser
+from utils.cleaning import DEFAULT_MIN_TITLE_WORDS, looks_like_article, strip_boilerplate
 from utils.dates import parse_article_date, parse_date_from_url
 from utils.models import Article
 
@@ -13,7 +14,12 @@ from utils.models import Article
 class GenericListParser(BaseParser):
     def parse(self, html: str) -> list[Article]:
         soup = BeautifulSoup(html, "html.parser")
+        # Remove navigation/header/footer/sidebar/social chrome before walking
+        # the (deliberately broad) article selector, so menu and footer links
+        # cannot surface as headlines.
+        strip_boilerplate(soup)
         selectors = self.source["selectors"]
+        min_words = int(self.source.get("min_title_words", DEFAULT_MIN_TITLE_WORDS))
         articles: list[Article] = []
 
         for item in soup.select(selectors["article"]):
@@ -38,6 +44,12 @@ class GenericListParser(BaseParser):
             # pointing every link-less item at the listing page. Otherwise dedup
             # (keyed on source_id + url) would collapse unrelated items together.
             url = urljoin(self.source["url"], href) if href else ""
+
+            # Drop the chrome that survives boilerplate stripping: category
+            # chips, "Home"/"Facebook" links, pagination, and links pointing at
+            # listing/section/social pages rather than an article.
+            if not looks_like_article(title, url, min_words):
+                continue
 
             summary = ""
             if selectors.get("summary"):

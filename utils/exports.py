@@ -162,7 +162,7 @@ def build_fallback_report(articles: list[Article], report_date: str) -> Structur
         subsection = ReportSubsection(name="", headlines=list(headline_map.values()))
         sections.append(ReportSection(name=section_name, subsections=[subsection]))
 
-    return StructuredReport(report_date=report_date, sections=sections)
+    return StructuredReport(report_date=report_date, sections=sections, is_draft=True)
 
 
 # --------------------------------------------------------------------------- #
@@ -195,7 +195,8 @@ def _add_hyperlink(paragraph, url: str, text: str) -> None:
 
 
 def _render_headline(document: Document, headline: ReportHeadline) -> None:
-    paragraph = document.add_paragraph()
+    # "List Bullet" gives the bulleted layout the PICS house style uses.
+    paragraph = document.add_paragraph(style="List Bullet")
     paragraph.add_run(headline.text)
     if headline.sources:
         paragraph.add_run(" – ")
@@ -235,6 +236,18 @@ def write_word_report(
     title_run = title.add_run(f"Libya News Headlines – {report.report_date}")
     title_run.bold = True
     title_run.font.size = Pt(16)
+
+    if report.is_draft:
+        banner = document.add_paragraph()
+        banner.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        banner_run = banner.add_run(
+            "DRAFT — mechanical layout: headlines are NOT translated or "
+            "editorially deduplicated. Set ANTHROPIC_API_KEY and re-run "
+            "(without --no-enrich) to produce the final report."
+        )
+        banner_run.bold = True
+        banner_run.italic = True
+        banner_run.font.color.rgb = RGBColor(0xC0, 0x00, 0x00)
 
     if not report.sections:
         document.add_paragraph(

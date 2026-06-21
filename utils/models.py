@@ -83,6 +83,10 @@ class StructuredReport:
 
     report_date: str
     sections: list[ReportSection] = field(default_factory=list)
+    # True when produced by the mechanical fallback (no Claude enrichment):
+    # headlines are untranslated and only roughly deduplicated, so the render
+    # marks the document DRAFT rather than letting it pass as the final product.
+    is_draft: bool = False
 
     def total_headlines(self) -> int:
         return sum(

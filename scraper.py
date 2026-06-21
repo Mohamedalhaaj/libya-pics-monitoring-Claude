@@ -8,9 +8,11 @@ from pathlib import Path
 from datetime import date, datetime
 
 from parsers import get_parser
+from parsers.feed import FeedListParser
 from utils.config import load_sources
 from utils.dates import in_date_range, parse_cli_date
 from utils.enrich import EnrichmentUnavailable, enrich_report
+from utils.feeds import discover_feed_url, fetch_feed_text
 from utils.exports import (
     build_fallback_report,
     ensure_output_dir,
@@ -42,6 +44,51 @@ DEFAULT_KEYWORDS = [
 ]
 
 
+async def _collect_articles(
+    source: dict,
+    fetcher: BrowserFetcher,
+    keywords: list[str],
+) -> tuple[list[Article], str, str]:
+    """Collect raw articles for a source, preferring a clean RSS/Atom feed.
+
+    Returns (articles, final_url, method) where method is "feed", "feed(auto)"
+    or "html". Feeds are tried first (configured ``feed`` URL); on any failure
+    or empty result we fall back to the boilerplate-stripped HTML scrape, and
+    opportunistically try a feed advertised by the page itself.
+    """
+    feed_url = source.get("feed")
+    if feed_url:
+        try:
+            text = await fetch_feed_text(feed_url)
+            articles = FeedListParser(source, keywords).parse(text)
+            if articles:
+                return articles, feed_url, "feed"
+            logger.warning("Feed %s returned no items; falling back to HTML", feed_url)
+        except Exception as exc:
+            logger.warning("Feed fetch failed for %s (%s); falling back to HTML", source["id"], exc)
+
+    # Only wait on an explicit, specific selector. Passing the generic article
+    # selector (which matches dozens of `li` elements) made Playwright log
+    # floods and could crash the driver, so rely on the fetcher's networkidle
+    # settle for JS-rendered lists instead.
+    result = await fetcher.fetch(source["url"], wait_for_selector=source.get("wait_for_selector"))
+
+    if not feed_url and source.get("autodiscover_feed", True):
+        discovered = discover_feed_url(result.html, result.final_url)
+        if discovered:
+            try:
+                text = await fetch_feed_text(discovered)
+                articles = FeedListParser(source, keywords).parse(text)
+                if articles:
+                    logger.info("Using autodiscovered feed for %s: %s", source["id"], discovered)
+                    return articles, discovered, "feed(auto)"
+            except Exception as exc:
+                logger.debug("Autodiscovered feed failed for %s: %s", source["id"], exc)
+
+    parser = get_parser(source["parser"])(source, keywords)
+    return parser.parse(result.html), result.final_url, "html"
+
+
 async def scrape_source(
     source: dict,
     fetcher: BrowserFetcher,
@@ -53,26 +100,21 @@ async def scrape_source(
     source_id = source["id"]
     logger.info("Collecting source=%s url=%s", source_id, source["url"])
     try:
-        # Only wait on an explicit, specific selector. Passing the generic
-        # article selector (which matches dozens of `li` elements) made
-        # Playwright log floods and could crash the driver, so rely on the
-        # fetcher's networkidle settle for JS-rendered lists instead.
-        result = await fetcher.fetch(
-            source["url"],
-            wait_for_selector=source.get("wait_for_selector"),
-        )
-        parser_cls = get_parser(source["parser"])
-        parser = parser_cls(source, keywords)
+        raw_articles, final_url, method = await _collect_articles(source, fetcher, keywords)
         articles = [
             article
-            for article in parser.parse(result.html)
+            for article in raw_articles
             if in_date_range(article.published_at, start_date, end_date, keep_undated)
         ]
+        logger.info("source=%s method=%s collected=%s kept=%s", source_id, method, len(raw_articles), len(articles))
+        # "empty" surfaces a source that fetched cleanly but yielded nothing
+        # (broken selectors, a dead feed, or no in-range news) so silent
+        # breakage is visible in the verification table.
         return articles, SourceVerification(
             source_id=source_id,
             source_name=source["name"],
-            url=result.final_url,
-            status="ok",
+            url=final_url,
+            status="ok" if articles else "empty",
             articles_found=len(articles),
         )
     except Exception as exc:
@@ -119,7 +161,7 @@ async def run(args: argparse.Namespace) -> None:
 
     all_articles.sort(key=lambda article: article.published_at or datetime.min, reverse=True)
 
-    report_date = format_report_date(args.report_date, end_date)
+    report_date = format_report_date(args.report_date, start_date, end_date)
     report = build_report(all_articles, report_date, enrich=not args.no_enrich, model=args.model)
 
     articles_csv = output_dir / "libya_media_headlines.csv"
@@ -156,12 +198,31 @@ def build_report(
     return build_fallback_report(articles, report_date)
 
 
-def format_report_date(explicit: str | None, end_date: datetime | None) -> str:
-    """Title-friendly coverage date, e.g. '3 June'."""
+def format_report_date(
+    explicit: str | None,
+    start_date: datetime | None,
+    end_date: datetime | None,
+) -> str:
+    """Title-friendly coverage date or range, e.g. '21 June' or '18-21 June'.
+
+    Mirrors the PICS report titles, which collapse a multi-day window into a
+    single ``18-21 June`` style range (the previous version only used the end
+    day and so mislabelled multi-day roundups).
+    """
     if explicit:
         return explicit
-    day: date = end_date.date() if end_date else date.today()
-    return f"{day.day} {day.strftime('%B')}"
+    end: date = end_date.date() if end_date else date.today()
+    start: date = start_date.date() if start_date else end
+    if start == end:
+        return f"{end.day} {end.strftime('%B')}"
+    if (start.year, start.month) == (end.year, end.month):
+        return f"{start.day}-{end.day} {end.strftime('%B')}"
+    if start.year == end.year:
+        return f"{start.day} {start.strftime('%B')} - {end.day} {end.strftime('%B')}"
+    return (
+        f"{start.day} {start.strftime('%B')} {start.year} - "
+        f"{end.day} {end.strftime('%B')} {end.year}"
+    )
 
 
 def build_parser() -> argparse.ArgumentParser:
