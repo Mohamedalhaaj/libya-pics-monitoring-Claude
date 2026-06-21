@@ -63,6 +63,7 @@ def print_scorecard(card: dict, profile) -> None:
     print(f"    attributed bullets ... {b['attribution_ratio']:.0%}")
     print(f"    boilerplate noise .... {b['noise_bullets']}")
     print(f"    duplicate bullets .... {b['duplicate_bullets']}  (gold 0)")
+    print(f"    Arabic outlet names .. {b['nonlatin_source_names']}  (gold 0 — outlets must be romanised)")
     print(f"    English headlines .... {b['english_ratio']:.0%}  (gold {profile.english_ratio:.0%})")
     print(f"    multi-source/dedup ... {b['multi_source_ratio']:.0%}  (gold {profile.multi_source_ratio:.0%})")
     print(f"    bullets .............. {b['n_bullets']}  (gold band {b['gold_bullet_band'][0]}-{b['gold_bullet_band'][1]})")

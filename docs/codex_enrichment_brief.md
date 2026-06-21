@@ -40,8 +40,12 @@ to a `D-D Month` range; a single day is just `D Month`).
    Tetteh/Koury, Security Council, UN agencies, international mediation,
    humanitarian agencies) are combined when identical but kept even if repeated.
 5. **Attribution format.** End each bullet with ` – ` then the outlets joined by
-   ` / `. Append ` (Arabic)` **only** to Arabic-language outlets (the `language`
-   column is `ar`); **never tag English outlets** — write `Reuters`, not
+   ` / `. **Every outlet name MUST be in Latin script** — if the data gives an
+   outlet in Arabic (e.g. `شبكة تواصل الإخبارية`, `اليوم السابع`, `حفريات`),
+   romanise it to its common English name (`Tawasul News`, `Youm7`, `Hafryat`)
+   and append ` (Arabic)`. Never leave an Arabic outlet name in the report.
+   Append ` (Arabic)` **only** to Arabic-language outlets (the `language` column
+   is `ar`); **never tag English outlets** — write `Reuters`, not
    `Reuters (English)`. **List each outlet at most once per bullet** — never
    `Libya Observer / Libya Observer`. English outlets first where natural. Example:
    `At least 15 migrant bodies wash ashore in eastern Libya – Reuters / New Arab / Shafaq (Arabic)`

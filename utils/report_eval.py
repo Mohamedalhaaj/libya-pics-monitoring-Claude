@@ -31,6 +31,7 @@ from utils.cleaning import is_boilerplate_title, normalize
 
 _SECTION_SET = {normalize(name) for name in taxonomy.SECTION_ORDER}
 _ARABIC_RE = re.compile(r"[؀-ۿ]")
+_LATIN_RE = re.compile(r"[A-Za-z]")
 _PAREN_RE = re.compile(r"\([^)]*\)")
 _LANG_TAG_RE = re.compile(r"\((?:arabic|english|عربي|عربى)\)", re.IGNORECASE)
 
@@ -159,6 +160,10 @@ def report_metrics(report: ParsedReport) -> dict:
     n = len(bullets)
     safe = max(n, 1)
     distinct = len({_norm_bullet(b.text) for b in bullets})
+    # Outlet names must be in Latin script (gold cites e.g. "Al Wasat (Arabic)",
+    # never "بوابة الوسط"). Flag attributions left in Arabic script.
+    src_names = [name for b in bullets for name, _ in b.sources]
+    latin_src = sum(1 for name in src_names if _LATIN_RE.search(name))
     return {
         "n_bullets": n,
         "sections": list(report.sections),
@@ -175,6 +180,8 @@ def report_metrics(report: ParsedReport) -> dict:
         # reward.
         "distinct_ratio": distinct / safe,
         "duplicate_bullets": n - distinct,
+        "latin_source_ratio": latin_src / max(len(src_names), 1),
+        "nonlatin_source_names": len(src_names) - latin_src,
     }
 
 
@@ -297,7 +304,8 @@ def score_report(
     role_pts = 100 * _ratio_score(m["role_prefix_ratio"], max(profile.role_prefix_ratio, 0.05))
     in_band = profile.bullets_low <= n <= profile.bullets_high
     volume_pts = 100 if in_band else 100 * _ratio_score(n, profile.bullets_low)
-    style = statistics.mean([english_pts, dedup_pts, role_pts, volume_pts])
+    latin_pts = 100 * m["latin_source_ratio"]
+    style = statistics.mean([english_pts, dedup_pts, role_pts, volume_pts, latin_pts])
 
     components = {
         "structure": round(structure, 1),
@@ -309,6 +317,7 @@ def score_report(
         "attribution_ratio": round(m["has_source_ratio"], 3),
         "noise_bullets": m["noise_bullets"],
         "duplicate_bullets": m["duplicate_bullets"],
+        "nonlatin_source_names": m["nonlatin_source_names"],
         "english_ratio": round(m["english_ratio"], 3),
         "multi_source_ratio": round(m["multi_source_ratio"], 3),
         "role_prefix_ratio": round(m["role_prefix_ratio"], 3),

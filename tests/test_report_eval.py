@@ -67,9 +67,23 @@ def test_parse_and_metrics():
         assert m["has_source_ratio"] == 1.0
         assert m["noise_bullets"] == 0
         assert m["duplicate_bullets"] == 0 and m["distinct_ratio"] == 1.0
+        assert m["nonlatin_source_names"] == 0 and m["latin_source_ratio"] == 1.0
         assert m["english_ratio"] == 1.0  # all gold bullets are English
         assert 0.0 < m["role_prefix_ratio"] <= 0.5  # one "[Mufti] ..." bullet
         assert m["multi_source_ratio"] == 0.5  # two of four cite >=2 outlets
+
+
+def test_arabic_outlet_names_flagged():
+    rep = {"United Nations": [
+        "UN envoy warns the window for action is narrowing – UN News / حفريات (Arabic)",
+        "Tetteh briefs the Security Council on Libya – Libya Review",
+    ]}
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "ar.docx"
+        _write_report(path, rep, "Libya News Headlines – 18-21 June")
+        m = report_metrics(parse_pics_report(path))
+        assert m["nonlatin_source_names"] == 1  # حفريات left un-romanised
+        assert abs(m["latin_source_ratio"] - 2 / 3) < 1e-6
 
 
 def test_coverage_recall_and_english_detection():
