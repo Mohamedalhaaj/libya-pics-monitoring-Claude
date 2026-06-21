@@ -42,12 +42,18 @@ to a `D-D Month` range; a single day is just `D Month`).
 5. **Attribution format.** End each bullet with ` – ` then the outlets joined by
    ` / `. Append ` (Arabic)` **only** to Arabic-language outlets (the `language`
    column is `ar`); **never tag English outlets** — write `Reuters`, not
-   `Reuters (English)`. English outlets first where natural. Example:
+   `Reuters (English)`. **List each outlet at most once per bullet** — never
+   `Libya Observer / Libya Observer`. English outlets first where natural. Example:
    `At least 15 migrant bodies wash ashore in eastern Libya – Reuters / New Arab / Shafaq (Arabic)`
-6. **Role/title prefixes.** When a bullet reports a named person's statement,
-   prefix their role in square brackets, e.g.
-   `[HoR Member] Jehani: the General Command's support gives the US initiative momentum`,
-   `[Mufti] Gharyani issues a fatwa calling on Libyans to reject the outcomes`.
+6. **Role/title prefixes (REQUIRED formatting).** Whenever a bullet reports a
+   named person's statement, it MUST start with their role in square brackets,
+   then the surname. Do not write a bare `Name: …` — add the bracketed role:
+   - write `[HoR Member] Jehani: the General Command's support gives the US initiative momentum`
+     — NOT `Al-Jehani: Support from the General Command…`
+   - `[SRSG] Tetteh warns the Security Council that disinformation threatens stability`
+   - `[Mufti] Gharyani issues a fatwa calling on Libyans to reject the outcomes`
+   The gold report brackets a role on ~15% of bullets; match that. Infer the role
+   from the source text (HoR Member, HCS Member, Mufti, SRSG, Minister, analyst…).
 7. **One sentence per bullet.** Factual, present tense where natural.
 
 ## Structure
