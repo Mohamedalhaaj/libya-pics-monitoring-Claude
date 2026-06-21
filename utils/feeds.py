@@ -14,7 +14,24 @@ import asyncio
 import logging
 import re
 import urllib.request
-from urllib.parse import urljoin
+from urllib.parse import quote, urljoin
+
+# Locale parameters for Google News RSS search, per source language.
+_GNEWS_LOCALE = {
+    "ar": "hl=ar&gl=LY&ceid=LY:ar",
+    "en": "hl=en-US&gl=US&ceid=US:en",
+}
+
+
+def google_news_url(query: str, language: str = "en") -> str:
+    """Build a Google News RSS search URL for a query in the given language.
+
+    Each query (a topic like 'Libya oil' or an outlet filter like
+    'Libya site:apnews.com') returns a different slice of publishers, so a
+    fan-out of queries widens outlet coverage far beyond a single 'Libya' feed.
+    """
+    locale = _GNEWS_LOCALE.get(language, _GNEWS_LOCALE["en"])
+    return f"https://news.google.com/rss/search?q={quote(query)}&{locale}"
 
 logger = logging.getLogger(__name__)
 

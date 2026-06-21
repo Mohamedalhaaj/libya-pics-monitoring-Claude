@@ -12,6 +12,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from parsers.feed import FeedListParser  # noqa: E402
+from utils.feeds import google_news_url  # noqa: E402
 
 RSS = """<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"><channel>
@@ -131,6 +132,14 @@ def test_keyword_filter_drops_offtopic_items():
     assert "Egypt and Saudi Arabia discuss regional economy" not in titles  # no keyword
     assert "Tripoli port resumes operations after maintenance" in titles  # Tripoli
     assert len(articles) == 2
+
+
+def test_google_news_url():
+    en = google_news_url("Libya site:apnews.com", "en")
+    assert en.startswith("https://news.google.com/rss/search?q=")
+    assert "site%3Aapnews.com" in en and "ceid=US:en" in en
+    ar = google_news_url("ليبيا النفط", "ar")
+    assert "ceid=LY:ar" in ar and "hl=ar" in ar
 
 
 if __name__ == "__main__":

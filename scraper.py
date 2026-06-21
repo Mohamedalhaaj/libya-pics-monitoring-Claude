@@ -9,10 +9,11 @@ from datetime import date, datetime
 
 from parsers import get_parser
 from parsers.feed import FeedListParser
+from parsers.generic import deduplicate_articles
 from utils.config import load_sources
 from utils.dates import in_date_range, parse_cli_date
 from utils.enrich import EnrichmentUnavailable, enrich_report
-from utils.feeds import discover_feed_url, fetch_feed_text
+from utils.feeds import discover_feed_url, fetch_feed_text, google_news_url
 from utils.exports import (
     build_fallback_report,
     ensure_output_dir,
@@ -56,6 +57,23 @@ async def _collect_articles(
     or empty result we fall back to the boilerplate-stripped HTML scrape, and
     opportunistically try a feed advertised by the page itself.
     """
+    # Google News fan-out: many queries (topics + outlet `site:` filters), each
+    # surfacing a different slice of publishers, fetched concurrently.
+    queries = source.get("google_news_queries")
+    if queries:
+        urls = [google_news_url(query, source.get("language", "en")) for query in queries]
+        results = await asyncio.gather(*(fetch_feed_text(url) for url in urls), return_exceptions=True)
+        collected: list[Article] = []
+        for query, result in zip(queries, results):
+            if isinstance(result, Exception):
+                logger.debug("gnews query failed (%s): %s", query, result)
+                continue
+            collected.extend(FeedListParser(source, keywords).parse(result))
+        collected = deduplicate_articles(collected)
+        if collected:
+            return collected, urls[0], f"gnews x{len(queries)}"
+        logger.warning("Google News fan-out for %s returned nothing", source["id"])
+
     feed_url = source.get("feed")
     if feed_url:
         try:

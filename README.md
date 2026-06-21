@@ -218,6 +218,12 @@ Sources are managed in `sources.json`. Each enabled source defines:
   News), cite each item's originating outlet (from the feed's `<source>` tag)
   instead of the configured source name, and strip the trailing `- Publisher`
   from the headline.
+- `google_news_queries` *(optional)*: a list of Google News search queries
+  (topics like `Libya oil` or outlet filters like `Libya site:apnews.com`),
+  fetched concurrently and merged. Each query surfaces a different slice of
+  publishers, so a fan-out widens outlet coverage far beyond one `Libya` feed
+  (raises gold-report outlet coverage from ~58% to ~85%). Use with
+  `per_item_source` and `language` (which sets the feed locale).
 - `min_title_words` *(optional, default `4`)*: HTML items whose title has fewer
   words are treated as navigation chrome and dropped.
 - `parser`: parser implementation, currently `generic_list` (HTML) or
