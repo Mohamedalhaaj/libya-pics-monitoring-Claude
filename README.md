@@ -2,6 +2,10 @@
 
 Python media monitoring system for collecting Libya-related headlines from approved Arabic and English sources and exporting structured products suitable for UNSMIL/PICS daily media monitoring.
 
+> **Generating the report with an external LLM (e.g. Codex)?** See
+> [`CODEX.md`](CODEX.md) — it points at the frozen data in `data/`, the editorial
+> spec, and the gold reference, with a self-scoring loop via `evaluate.py`.
+
 ## Features
 
 - **Feed-first collection**: sources with an RSS/Atom feed are read straight
