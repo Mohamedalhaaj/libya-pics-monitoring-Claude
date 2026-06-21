@@ -66,6 +66,7 @@ def test_parse_and_metrics():
         assert m["title_ok"] and m["sections_ordered"]
         assert m["has_source_ratio"] == 1.0
         assert m["noise_bullets"] == 0
+        assert m["duplicate_bullets"] == 0 and m["distinct_ratio"] == 1.0
         assert m["english_ratio"] == 1.0  # all gold bullets are English
         assert 0.0 < m["role_prefix_ratio"] <= 0.5  # one "[Mufti] ..." bullet
         assert m["multi_source_ratio"] == 0.5  # two of four cite >=2 outlets
@@ -92,6 +93,21 @@ def test_coverage_recall_and_english_detection():
         assert cov["matched_sources"] == 3
         assert abs(cov["source_recall"] - 0.6) < 1e-6
         assert "anadolu agency" in cov["missing_sources"]
+
+
+def test_duplicate_bullets_detected():
+    dup = {"United Nations": [
+        "UN envoy warns the window for action is narrowing – UN News",
+        "UN envoy warns the window for action is narrowing. – Libya Observer",  # same, punctuation aside
+        "Tetteh briefs the Security Council on Libya – Libya Review",
+    ]}
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "d.docx"
+        _write_report(path, dup, "Libya News Headlines – 18-21 June")
+        m = report_metrics(parse_pics_report(path))
+        assert m["n_bullets"] == 3
+        assert m["duplicate_bullets"] == 1  # first two normalise equal
+        assert abs(m["distinct_ratio"] - 2 / 3) < 1e-6
 
 
 def test_canonical_source_matching():

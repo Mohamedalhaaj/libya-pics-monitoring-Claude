@@ -150,10 +150,15 @@ def parse_pics_report(path: str | Path) -> ParsedReport:
 # Metrics + gold profile                                                       #
 # --------------------------------------------------------------------------- #
 
+def _norm_bullet(text: str) -> str:
+    return re.sub(r"\s+", " ", re.sub(r"[^\w\s]", " ", text.lower())).strip()
+
+
 def report_metrics(report: ParsedReport) -> dict:
     bullets = report.bullets
     n = len(bullets)
     safe = max(n, 1)
+    distinct = len({_norm_bullet(b.text) for b in bullets})
     return {
         "n_bullets": n,
         "sections": list(report.sections),
@@ -165,6 +170,11 @@ def report_metrics(report: ParsedReport) -> dict:
         "role_prefix_ratio": sum(b.has_role_prefix for b in bullets) / safe,
         "noise_bullets": sum(is_boilerplate_title(b.text) for b in bullets),
         "avg_sources_per_bullet": sum(len(b.sources) for b in bullets) / safe,
+        # Distinct content: the gold reports never repeat a bullet, so padded /
+        # duplicated bullets are a real defect the volume metric would otherwise
+        # reward.
+        "distinct_ratio": distinct / safe,
+        "duplicate_bullets": n - distinct,
     }
 
 
@@ -278,7 +288,8 @@ def score_report(
     order_pts = 100 if m["sections_ordered"] else (50 if m["sections"] else 0)
     attribution_pts = 100 * m["has_source_ratio"]
     noise_pts = 100 if m["noise_bullets"] == 0 else max(0.0, 100 - 100 * m["noise_bullets"] / max(n, 1))
-    structure = statistics.mean([title_pts, order_pts, attribution_pts, noise_pts])
+    distinct_pts = 100 * m["distinct_ratio"]
+    structure = statistics.mean([title_pts, order_pts, attribution_pts, noise_pts, distinct_pts])
 
     # Style conformance vs the gold profile ---------------------------------
     english_pts = 100 * _ratio_score(m["english_ratio"], profile.english_ratio)
@@ -297,6 +308,7 @@ def score_report(
         "sections_ordered": m["sections_ordered"],
         "attribution_ratio": round(m["has_source_ratio"], 3),
         "noise_bullets": m["noise_bullets"],
+        "duplicate_bullets": m["duplicate_bullets"],
         "english_ratio": round(m["english_ratio"], 3),
         "multi_source_ratio": round(m["multi_source_ratio"], 3),
         "role_prefix_ratio": round(m["role_prefix_ratio"], 3),

@@ -55,6 +55,12 @@ to a `D-D Month` range; a single day is just `D Month`).
    The gold report brackets a role on ~15% of bullets; match that. Infer the role
    from the source text (HoR Member, HCS Member, Mufti, SRSG, Minister, analyst…).
 7. **One sentence per bullet.** Factual, present tense where natural.
+8. **No duplicate or filler bullets.** Every bullet is a distinct story and
+   appears exactly once — never repeat the same headline (the gold report has
+   zero duplicates). Do NOT emit vague placeholder bullets such as "A
+   Libya-related report covered domestic developments" or "Regional talks
+   addressed Libya"; if you cannot state a specific fact, drop the item. A
+   shorter report of distinct bullets beats a padded one with repeats.
 
 ## Structure
 
