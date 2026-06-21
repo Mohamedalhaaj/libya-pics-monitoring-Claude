@@ -1,35 +1,61 @@
-# CODEX.md — Generate the PICS "Libya News Headlines" report
+# CODEX.md — Generate a PICS "Libya News Headlines" report for any dates
 
-You are producing the UNSMIL/PICS **"Libya News Headlines – 18-21 June"** report
-from data that is already collected and frozen in this repo. **Do not re-scrape**
-— everything you need is here.
+Goal: given a **date range**, produce a UNSMIL/PICS **"Libya News Headlines"**
+Word report at the quality of the human gold reports in `samples/`. Same process
+every time: **collect → write per the brief → self-check → iterate.**
 
-## Inputs (in this repo)
+---
 
-| Path | What it is |
-|---|---|
-| `data/libya_media_headlines.csv` (and `.json`) | **Your source material** — 456 collected, deduplicated, dated articles (18–21 June 2026; 132 outlets; Arabic + English). Columns: `source_name, language, title, summary, url, published_at, section`. |
-| `docs/codex_enrichment_brief.md` | **The editorial rules you MUST follow** — translation, dedup, attribution format, role prefixes, the 8-section taxonomy, disclaimer. Read it fully before writing anything. |
-| `reference/Libya_News_Headlines_18-21_June_2026_GOLD.docx` | The human gold report for the same dates — for **self-scoring only**. Do not copy text from it. |
-| `samples/*.docx` | Earlier gold reports — style reference and the eval profile. |
+## Quickstart for a new report
 
-## Task
-
-1. Read `docs/codex_enrichment_brief.md` end to end.
-2. Turn `data/libya_media_headlines.csv` into a Word document titled
-   **"Libya News Headlines – 18-21 June"**, following the brief exactly.
-3. Save it as `Libya_News_Headlines_18-21_June_2026_PICS.docx` in the repo root.
-
-## Self-check — iterate until it passes
+Replace `START`/`END` with the coverage dates (ISO `YYYY-MM-DD`), e.g.
+`2026-06-22` to `2026-06-25`.
 
 ```bash
 pip install -r requirements.txt
-python evaluate.py Libya_News_Headlines_18-21_June_2026_PICS.docx \
-  --gold reference/Libya_News_Headlines_18-21_June_2026_GOLD.docx \
-  --collected data/libya_media_headlines.csv
+playwright install chromium            # only needed for the collection step
+
+# 1. Collect fresh data for the dates (live scrape -> output/libya_media_headlines.csv)
+python scraper.py --start-date START --end-date END --no-enrich
+
+# 2. Write the report (you, Codex) — see "Write the report" below.
+
+# 3. Self-check, then iterate until it passes
+python evaluate.py Libya_News_Headlines_<dates>_PICS.docx \
+  --collected output/libya_media_headlines.csv
 ```
 
-Aim for a **total ≥ 95**, matching the gold profile:
+> **Live data:** the scraper reads RSS/Atom feeds and Google News, which only
+> return **recent** items. Run it within a few days of the coverage dates — you
+> cannot reconstruct an old window later. The title auto-derives from the dates
+> (e.g. `22-25 June`).
+
+---
+
+## Write the report
+
+Read `docs/codex_enrichment_brief.md` **in full**, then turn
+`output/libya_media_headlines.csv` into a Word document titled
+`Libya News Headlines – <range>` (the brief explains the title rule). The CSV
+columns are `source_name, language, title, summary, url, published_at, section`.
+
+Save as `Libya_News_Headlines_<dates>_PICS.docx` in the repo root.
+
+> **Shortcut:** if the environment has an `ANTHROPIC_API_KEY` with credit, skip
+> the manual step entirely — `python scraper.py --start-date START --end-date END`
+> (without `--no-enrich`) scrapes **and** writes the finished report via
+> `utils/enrich.py`. The manual Codex path exists for when there is no API credit.
+
+---
+
+## Self-check — the quality bar
+
+```bash
+python evaluate.py <your_report>.docx --collected output/libya_media_headlines.csv
+```
+
+For a **new date range there is no date-matched gold**, so the coverage component
+is not scored — drive the two that are, and aim for a conformance **total ≥ 90**:
 
 | check | target |
 |---|---|
@@ -39,27 +65,41 @@ Aim for a **total ≥ 95**, matching the gold profile:
 | English headlines | 100% |
 | sections in canonical order | yes |
 | role-prefix ratio | ~0.15 (`[HoR Member] Jehani: …`) |
-| distinct bullets | ~150–170, every one unique |
-| ceiling coverage | as high as the data allows (~90%) |
+| distinct bullets | every one unique; volume scaled to the news of the period |
 
-## Pitfalls that cost points in earlier attempts — avoid them up front
+(When you *do* have a same-dates human report, add
+`--gold path/to/that.docx` to also score outlet coverage.)
 
-- **No duplicate bullets and no vague filler.** Each bullet is one distinct story
-  and appears once. Never emit placeholders like "A Libya-related report covered
-  domestic developments…" or "Regional talks addressed Libya." If you can't state
-  a specific fact, drop the item. (A shorter report of distinct bullets beats a
-  padded one — the gold has zero duplicates.)
-- **Tag only Arabic outlets** with `(Arabic)`; **never** write `(English)`.
+---
+
+## Pitfalls that cost points — avoid them up front
+
+- **No duplicate bullets and no vague filler.** Each bullet = one distinct story,
+  once. Never emit placeholders like "A Libya-related report covered domestic
+  developments…". A shorter report of distinct bullets beats a padded one.
+- **Tag only Arabic outlets** with `(Arabic)`; **never** `(English)`.
 - **Emit each of the 8 sections exactly once** — don't repeat a section heading.
-- **List every outlet that reported a story** (they are in the data — this drives
-  coverage), but **never repeat an outlet within a single bullet**.
+- **List every outlet that reported a story** (they are in the CSV), but **never
+  repeat an outlet within one bullet**.
 - **Bracket the role** on any named-official statement: `[SRSG] Tetteh warns…`,
-  `[Mufti] Gharyani issues a fatwa…`, `[HoR Member] Jehani: …`.
+  `[Mufti] Gharyani…`, `[HoR Member] Jehani: …`.
 
-When `evaluate.py` reports **total ≥ 95 with 0 duplicate bullets**, you're done.
+When `evaluate.py` reports the targets above with **0 duplicate bullets**, ship it.
 
-> Tip: if you have an `ANTHROPIC_API_KEY` with credit, you can instead let the
-> pipeline do the editorial step itself —
-> `python scraper.py --start-date 2026-06-18 --end-date 2026-06-21` — but that
-> re-scrapes **live** data, which drifts day to day. Use the frozen `data/` files
-> above for a reproducible result.
+---
+
+## Reproducible worked example (18–21 June 2026)
+
+A frozen snapshot from the original run is committed so you can validate the whole
+loop without scraping, and against a real human gold:
+
+```bash
+python evaluate.py Libya_News_Headlines_18-21_June_2026_PICS.docx \
+  --gold reference/Libya_News_Headlines_18-21_June_2026_GOLD.docx \
+  --collected data/libya_media_headlines.csv
+```
+
+- `data/libya_media_headlines.csv` (+ `.json`) — the 456-article snapshot.
+- `reference/…GOLD.docx` — the human report for those dates (scored 97.2 in our run).
+
+Use this example to confirm your method, then apply the **Quickstart** to new dates.
