@@ -14,8 +14,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from docx import Document  # noqa: E402
 
 from utils.report_eval import (  # noqa: E402
+    Bullet,
+    ParsedReport,
     canonical_source,
     coverage_recall,
+    link_fidelity,
     parse_pics_report,
     report_metrics,
 )
@@ -122,6 +125,31 @@ def test_duplicate_bullets_detected():
         assert m["n_bullets"] == 3
         assert m["duplicate_bullets"] == 1  # first two normalise equal
         assert abs(m["distinct_ratio"] - 2 / 3) < 1e-6
+
+
+def test_vague_bullets_flagged():
+    vague = Bullet("International outlets linked Libya's oil sector to global energy shifts", [], "Economy", "")
+    specific = Bullet("Libya's oil production reached 1.4 million barrels per day", [], "Economy", "")
+    role = Bullet("[Analyst] Issa says invoking Libya as a failure model is unfair", [], "Politics", "")
+    assert vague.is_vague
+    assert not specific.is_vague
+    assert not role.is_vague  # role-prefixed = specific
+
+
+def test_link_fidelity_detects_mismatch():
+    url_to_article = {
+        "x.com/a": ("Libya oil production reaches 1.4 million barrels", "en"),
+        "x.com/b": ("Saddam Haftar addresses illegal migration in the east", "en"),
+    }
+    report = ParsedReport(path="t", title="Libya News Headlines – 22 June", bullets=[
+        # matches its link (shares 'oil','production','barrels')
+        Bullet("Libya's oil production rises to 1.4 million barrels", [], "Economy", "", ["https://x.com/a"]),
+        # mismatch: bullet about a US proposal, link about migration
+        Bullet("Haftar welcomed the US proposal as a rival roadmap emerged", [], "Politics", "", ["https://x.com/b"]),
+    ])
+    fid = link_fidelity(report, url_to_article)
+    assert fid["checked"] == 2
+    assert fid["mismatches"] == 1
 
 
 def test_canonical_source_matching():

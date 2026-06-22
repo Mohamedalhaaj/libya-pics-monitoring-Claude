@@ -23,7 +23,9 @@ from pathlib import Path
 from utils.config import load_sources
 from utils.report_eval import (
     JudgeUnavailable,
+    _norm_url,
     build_gold_profile,
+    link_fidelity,
     llm_judge,
     parse_pics_report,
     score_report,
@@ -63,6 +65,7 @@ def print_scorecard(card: dict, profile) -> None:
     print(f"    attributed bullets ... {b['attribution_ratio']:.0%}")
     print(f"    boilerplate noise .... {b['noise_bullets']}")
     print(f"    duplicate bullets .... {b['duplicate_bullets']}  (gold 0)")
+    print(f"    vague/umbrella bullets {b['vague_bullets']}  (gold ~0 — each bullet states one fact)")
     print(f"    Arabic outlet names .. {b['nonlatin_source_names']}  (gold 0 — outlets must be romanised)")
     print(f"    English headlines .... {b['english_ratio']:.0%}  (gold {profile.english_ratio:.0%})")
     print(f"    multi-source/dedup ... {b['multi_source_ratio']:.0%}  (gold {profile.multi_source_ratio:.0%})")
@@ -130,6 +133,22 @@ def main() -> None:
     print_profile(profile)
     print()
     print_scorecard(card, profile)
+
+    # Headline-vs-link fidelity audit (needs the collected data for real titles).
+    if Path(args.collected).exists():
+        with open(args.collected, encoding="utf-8-sig") as handle:
+            url_to_article = {
+                _norm_url(r["url"]): (r["title"], r["language"])
+                for r in csv.DictReader(handle) if r["url"]
+            }
+        fid = link_fidelity(report, url_to_article)
+        card["link_fidelity"] = {k: v for k, v in fid.items() if k != "examples"}
+        print("\n  headline ↔ link fidelity (English-source links):")
+        print(f"    checked {fid['checked']} | likely mismatches: {fid['mismatches']}"
+              f" ({100 * fid['mismatches'] // max(fid['checked'], 1)}%)")
+        for head, real in fid["examples"][:4]:
+            print(f"      ✗ bullet: {head[:62]}")
+            print(f"        link  : {real[:62]}")
 
     if card.get("llm_judge"):
         print("\n  llm judge:", json.dumps(card["llm_judge"], ensure_ascii=False))

@@ -71,6 +71,8 @@ report can clear it while under-merging. You must also hit the dedup target:
 | **multi-source / dedup** | **≈ 0.20–0.30** (the `evaluate.py` "multi-source/dedup" line). If it's ~0.10–0.15 you UNDER-MERGED — fix before shipping. |
 | **bullet count** | **≈ the day's distinct *stories*, not the article count** — typically ~70–90 for a single day. ~1.5–2× that (e.g. ~140) means you listed the same story separately per outlet instead of merging. |
 | duplicate bullets | **0** (exact repeats) |
+| **vague/umbrella bullets** | **0** — every bullet states one specific fact, not "officials reported …" |
+| **headline ↔ link fidelity** | **0 mismatches** (English-source); each bullet must match the article it links |
 | boilerplate noise | 0 |
 | Arabic outlet names | **0** |
 | English headlines | 100% |

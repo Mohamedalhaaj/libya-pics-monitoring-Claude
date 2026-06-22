@@ -65,6 +65,14 @@ to a `D-D Month` range; a single day is just `D Month`).
    Libya-related report covered domestic developments" or "Regional talks
    addressed Libya"; if you cannot state a specific fact, drop the item. A
    shorter report of distinct bullets beats a padded one with repeats.
+9. **Fidelity — each bullet must match the article(s) it cites.** Write what the
+   cited article actually reports; the headline and its link must be about the
+   SAME story. Never write a generic umbrella sentence over several stories
+   ("International outlets linked Libya's oil sector…", "Officials reported
+   investment activity…") — that reads fine but won't match any single link.
+   Only merge sources (rule 3) when they cover the **same event**; if two
+   articles differ, keep them as separate bullets. Do not attach a source/URL to
+   a bullet unless that article supports the bullet's exact claim.
 
 ## Structure
 

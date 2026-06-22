@@ -25,6 +25,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from docx import Document
+from docx.oxml.ns import qn
 
 from utils import taxonomy
 from utils.cleaning import is_boilerplate_title, normalize
@@ -54,6 +55,17 @@ _DASH_SPLIT_RE = re.compile(r"\s[–—-]\s")
 _TITLE_RE = re.compile(r"libya news headlines", re.IGNORECASE)
 _STOP_HEADINGS = {"source verification", "disclaimer"}
 
+# Vague "umbrella" bullets that summarise several stories generically instead of
+# stating one fact — they read fine but rarely match the article they link to.
+# e.g. "International outlets linked …", "Economic officials … reported …".
+_VAGUE_RE = re.compile(
+    r"\b(officials|authorities|institutions|bodies|outlets|agencies|sources|"
+    r"ministries|councils|coverage|reports?|actors|organizations|organisations)\b"
+    r"[^.]*?\b(reported|discussed|covered|linked|noted|highlighted|addressed|"
+    r"reviewed|touched on|focused on)\b",
+    re.IGNORECASE,
+)
+
 
 @dataclass(slots=True)
 class Bullet:
@@ -61,6 +73,7 @@ class Bullet:
     sources: list[tuple[str, str]]  # (name, language)
     section: str
     subsection: str
+    urls: list[str] = field(default_factory=list)
 
     @property
     def is_english(self) -> bool:
@@ -72,6 +85,22 @@ class Bullet:
     @property
     def has_role_prefix(self) -> bool:
         return bool(_ROLE_PREFIX_RE.match(self.text))
+
+    @property
+    def is_vague(self) -> bool:
+        # Role-prefixed bullets name a specific person -> always specific.
+        return not self.has_role_prefix and bool(_VAGUE_RE.search(self.text))
+
+
+def _paragraph_links(paragraph) -> list[str]:
+    """External hyperlink targets in a paragraph, in order."""
+    urls: list[str] = []
+    rels = paragraph.part.rels
+    for hyperlink in paragraph._p.findall(qn("w:hyperlink")):
+        rid = hyperlink.get(qn("r:id"))
+        if rid and rid in rels:
+            urls.append(rels[rid].target_ref)
+    return urls
 
 
 @dataclass(slots=True)
@@ -139,7 +168,8 @@ def parse_pics_report(path: str | Path) -> ParsedReport:
                 sources = _split_sources(source_blob)
             else:
                 headline, sources = text, []
-            bullets.append(Bullet(headline, sources, current_section, current_subsection))
+            bullets.append(Bullet(headline, sources, current_section, current_subsection,
+                                  _paragraph_links(paragraph)))
         elif len(text.split()) <= 10:
             current_subsection = text  # short non-section line = subsection header
         # else: long unattributed paragraph (analysis body) — ignored
@@ -182,7 +212,57 @@ def report_metrics(report: ParsedReport) -> dict:
         "duplicate_bullets": n - distinct,
         "latin_source_ratio": latin_src / max(len(src_names), 1),
         "nonlatin_source_names": len(src_names) - latin_src,
+        # Vague umbrella bullets ("officials reported …") rarely match their
+        # linked article — a fidelity risk the gold reports never have.
+        "vague_bullets": sum(b.is_vague for b in bullets),
+        "specific_ratio": sum(not b.is_vague for b in bullets) / safe,
     }
+
+
+# Words too generic to prove a headline matches its linked article.
+_FIDELITY_STOP = set(
+    "the for and with from over into amid says say after report libya libyan "
+    "official officials new amid as to of in on at by".split()
+)
+
+
+def _content_tokens(text: str) -> set[str]:
+    return {t for t in re.findall(r"[a-z0-9]{3,}", text.lower()) if t not in _FIDELITY_STOP}
+
+
+def link_fidelity(report: ParsedReport, url_to_article: dict[str, tuple[str, str]]) -> dict:
+    """Do bullets actually match the article they link to?
+
+    Checkable only for English-source links (we have the real English title);
+    ``url_to_article`` maps a normalised URL -> (title, language). For each such
+    link we require ≥2 shared content words between the bullet and the real
+    title. Returns counts + example mismatches. Arabic-source links can't be
+    verified deterministically (cross-lingual) — use the LLM judge for those.
+    """
+    checked = 0
+    mismatches: list[tuple[str, str]] = []
+    for bullet in report.bullets:
+        for url in bullet.urls:
+            article = url_to_article.get(_norm_url(url))
+            if not article or article[1] != "en":
+                continue
+            title = article[0]
+            checked += 1
+            if len(_content_tokens(bullet.text) & _content_tokens(title)) < 2:
+                mismatches.append((bullet.text, title))
+            break  # one representative link per bullet is enough
+    return {
+        "checked": checked,
+        "mismatches": len(mismatches),
+        "examples": mismatches[:8],
+    }
+
+
+def _norm_url(url: str) -> str:
+    from urllib.parse import urlsplit
+
+    parts = urlsplit(url or "")
+    return (parts.netloc + parts.path).rstrip("/").lower()
 
 
 def _is_canonical_order(sections: list[str]) -> bool:
@@ -296,7 +376,10 @@ def score_report(
     attribution_pts = 100 * m["has_source_ratio"]
     noise_pts = 100 if m["noise_bullets"] == 0 else max(0.0, 100 - 100 * m["noise_bullets"] / max(n, 1))
     distinct_pts = 100 * m["distinct_ratio"]
-    structure = statistics.mean([title_pts, order_pts, attribution_pts, noise_pts, distinct_pts])
+    specific_pts = 100 * m["specific_ratio"]  # penalise vague umbrella bullets
+    structure = statistics.mean(
+        [title_pts, order_pts, attribution_pts, noise_pts, distinct_pts, specific_pts]
+    )
 
     # Style conformance vs the gold profile ---------------------------------
     english_pts = 100 * _ratio_score(m["english_ratio"], profile.english_ratio)
@@ -317,6 +400,7 @@ def score_report(
         "attribution_ratio": round(m["has_source_ratio"], 3),
         "noise_bullets": m["noise_bullets"],
         "duplicate_bullets": m["duplicate_bullets"],
+        "vague_bullets": m["vague_bullets"],
         "nonlatin_source_names": m["nonlatin_source_names"],
         "english_ratio": round(m["english_ratio"], 3),
         "multi_source_ratio": round(m["multi_source_ratio"], 3),
