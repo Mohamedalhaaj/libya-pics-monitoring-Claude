@@ -55,6 +55,51 @@ Save as `Libya_News_Headlines_<dates>_PICS.docx` in the repo root.
 
 ---
 
+## Be your own judge — audit the draft BEFORE you finalize
+
+You are an LLM that can read Arabic and English and open links. The automated
+`evaluate.py` (next section) catches the cheap, mechanical errors — but two things
+only *you* can verify by actually reading the articles: whether each link matches
+its bullet, and whether the same story was written twice. Run these four passes on
+your draft and fix everything they surface. **Read the article (the CSV title/summary,
+or open the URL in the browser when unsure) — do not guess.**
+
+**Pass 1 — Link fidelity (every bullet, every source).**
+For each bullet, read EACH article it cites. Every cited article must report the
+bullet's exact event.
+- A cited article about a *different* event → remove it from this bullet (give that
+  story its own bullet if it matters).
+- If the headline matches none of its links → rewrite the headline to the article,
+  or drop the bullet.
+
+**Pass 2 — Same-event merge (every multi-source bullet).**
+Write the bullet's event in ≤5 words (e.g. "UNSMIL launches dialogue meetings").
+EVERY cited source must fit that exact event. Sharing only a topic word (UNSMIL,
+oil, migration, Dbeibeh) is NOT enough.
+- WRONG: "UNSMIL launches dialogue" citing [the launch] + [a Mufti's fatwa against
+  UNSMIL] + [an MP's criticism] → these are 3 events → 3 separate bullets.
+
+**Pass 3 — Whole-report de-duplication (across sections AND languages).**
+Give every bullet a short event-key = main proper noun + main action (e.g.
+"Najim · prison sentence", "Dbeibeh · meets Egyptian intelligence"). Sort the keys
+and find any event that appears **twice** — including an English-source bullet and
+an Arabic-source bullet about the same event, or the same event placed in two
+sections. Merge each into ONE bullet (one section, citing all outlets).
+- Quick test for any two bullets: do they share the main proper noun AND the main
+  action? If yes → same story → merge.
+- Real failures to catch: a prison sentence written as 3 bullets; one Dbeibeh
+  meeting as 3 bullets; an oil-output record twice.
+
+**Pass 4 — Specificity.** Every bullet states one concrete fact. Delete vague
+umbrellas ("officials reported…", "international outlets linked…").
+
+**Use the browser** whenever you are unsure two articles are the same event, or
+whether a headline matches its link: open the URLs and read them.
+
+Only once all four passes are clean, run the automated check below.
+
+---
+
 ## Self-check — the quality bar
 
 ```bash
