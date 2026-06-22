@@ -47,6 +47,14 @@ to a `D-D Month` range; a single day is just `D Month`).
    humanitarian agencies) are kept even if repeated — but still split by event
    per rule 3: combine outlets only when they cover the *same* UN event, never
    lump different UN stories into one bullet.
+4b. **One story = one bullet in the WHOLE report — including across languages and
+   sections.** If the data has an English article and an Arabic article about the
+   *same event* (e.g. a court sentence, a Dbeibeh meeting, an oil-output record),
+   that is ONE bullet citing both, NOT an English bullet and an Arabic bullet. A
+   story belongs in exactly one section (its best fit) — never repeat it in two
+   sections. Before writing a bullet, check you haven't already covered that event
+   elsewhere. (Real failure seen: the same prison sentence appeared as 3 bullets
+   across Military and Human Rights; one Dbeibeh meeting as 3 bullets.)
 5. **Attribution format.** End each bullet with ` – ` then the outlets joined by
    ` / `. **Every outlet name MUST be in Latin script** — if the data gives an
    outlet in Arabic (e.g. `شبكة تواصل الإخبارية`, `اليوم السابع`, `حفريات`),
