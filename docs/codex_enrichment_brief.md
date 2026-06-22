@@ -72,7 +72,9 @@ to a `D-D Month` range; a single day is just `D Month`).
    investment activity…") — that reads fine but won't match any single link.
    Only merge sources (rule 3) when they cover the **same event**; if two
    articles differ, keep them as separate bullets. Do not attach a source/URL to
-   a bullet unless that article supports the bullet's exact claim.
+   a bullet unless that article supports the bullet's exact claim. Each cited
+   outlet's URL must be the **specific article** for THIS story — never reuse one
+   article's URL on another bullet (a link must appear on exactly one bullet).
 
 ## Structure
 

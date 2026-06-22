@@ -136,6 +136,21 @@ def test_vague_bullets_flagged():
     assert not role.is_vague  # role-prefixed = specific
 
 
+def test_reused_url_detected():
+    bullets = [
+        Bullet("Story A about elections", [], "Politics", "", ["https://lana.gov.ly/post.php?id=1"]),
+        Bullet("Story B about oil output", [], "Economy", "", ["https://lana.gov.ly/post.php?id=2"]),
+        # same URL as Story A -> mis-attributed
+        Bullet("Story C about youth committee", [], "Varieties", "", ["https://lana.gov.ly/post.php?id=1"]),
+    ]
+    rep = ParsedReport(path="t", title="Libya News Headlines – 22 June", bullets=bullets)
+    m = report_metrics(rep)
+    assert m["reused_urls"] == 1  # ?id=1 appears on two different bullets
+    # query string is preserved so ?id=1 and ?id=2 are distinct
+    from utils.report_eval import _norm_url
+    assert _norm_url("https://lana.gov.ly/post.php?id=1") != _norm_url("https://lana.gov.ly/post.php?id=2")
+
+
 def test_link_fidelity_detects_mismatch():
     url_to_article = {
         "x.com/a": ("Libya oil production reaches 1.4 million barrels", "en"),

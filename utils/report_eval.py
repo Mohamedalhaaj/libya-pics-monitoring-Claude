@@ -216,7 +216,25 @@ def report_metrics(report: ParsedReport) -> dict:
         # linked article — a fidelity risk the gold reports never have.
         "vague_bullets": sum(b.is_vague for b in bullets),
         "specific_ratio": sum(not b.is_vague for b in bullets) / safe,
+        # The same article URL attached to two different bullets means at least
+        # one is mis-attributed (a story's link shouldn't appear on an unrelated
+        # bullet). Language-agnostic, so it catches Arabic mis-links too.
+        "reused_urls": _count_reused_urls(bullets),
     }
+
+
+def _count_reused_urls(bullets: list[Bullet]) -> int:
+    seen: dict[str, str] = {}
+    reused: set[str] = set()
+    for bullet in bullets:
+        key = _norm_bullet(bullet.text)
+        for url in bullet.urls:
+            u = _norm_url(url)
+            if u in seen and seen[u] != key:
+                reused.add(u)
+            else:
+                seen.setdefault(u, key)
+    return len(reused)
 
 
 # Words too generic to prove a headline matches its linked article.
@@ -261,8 +279,12 @@ def link_fidelity(report: ParsedReport, url_to_article: dict[str, tuple[str, str
 def _norm_url(url: str) -> str:
     from urllib.parse import urlsplit
 
+    # Keep the query string: many sources put the article id there
+    # (e.g. lana.gov.ly/post.php?id=12345), so dropping it would collapse every
+    # article from that outlet into one and break URL matching.
     parts = urlsplit(url or "")
-    return (parts.netloc + parts.path).rstrip("/").lower()
+    query = f"?{parts.query}" if parts.query else ""
+    return (parts.netloc + parts.path + query).rstrip("/").lower()
 
 
 def _is_canonical_order(sections: list[str]) -> bool:
@@ -377,8 +399,9 @@ def score_report(
     noise_pts = 100 if m["noise_bullets"] == 0 else max(0.0, 100 - 100 * m["noise_bullets"] / max(n, 1))
     distinct_pts = 100 * m["distinct_ratio"]
     specific_pts = 100 * m["specific_ratio"]  # penalise vague umbrella bullets
+    reuse_pts = max(0.0, 100 - 100 * m["reused_urls"] / max(n, 1))  # mis-attributed links
     structure = statistics.mean(
-        [title_pts, order_pts, attribution_pts, noise_pts, distinct_pts, specific_pts]
+        [title_pts, order_pts, attribution_pts, noise_pts, distinct_pts, specific_pts, reuse_pts]
     )
 
     # Style conformance vs the gold profile ---------------------------------
@@ -401,6 +424,7 @@ def score_report(
         "noise_bullets": m["noise_bullets"],
         "duplicate_bullets": m["duplicate_bullets"],
         "vague_bullets": m["vague_bullets"],
+        "reused_urls": m["reused_urls"],
         "nonlatin_source_names": m["nonlatin_source_names"],
         "english_ratio": round(m["english_ratio"], 3),
         "multi_source_ratio": round(m["multi_source_ratio"], 3),
