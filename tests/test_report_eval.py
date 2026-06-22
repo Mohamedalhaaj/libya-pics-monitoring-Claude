@@ -19,6 +19,7 @@ from utils.report_eval import (  # noqa: E402
     canonical_source,
     coverage_recall,
     link_fidelity,
+    overmerge_audit,
     parse_pics_report,
     report_metrics,
 )
@@ -134,6 +135,23 @@ def test_vague_bullets_flagged():
     assert vague.is_vague
     assert not specific.is_vague
     assert not role.is_vague  # role-prefixed = specific
+
+
+def test_overmerge_audit():
+    u2a = {
+        "x.com/1": ("UN Mission launches dialogue meetings with dialogue members", "ar"),
+        "x.com/2": ("Mufti Ghariani incites against the United Nations Mission", "ar"),
+        "x.com/3": ("Boufaid criticizes the constitutional path entirely", "ar"),
+        "x.com/5": ("UN Mission launches dialogue sessions on outcomes", "ar"),
+        "x.com/6": ("Mission launches dialogue meetings on outcomes today", "ar"),
+    }
+    over = Bullet("UNSMIL dialogue", [], "United Nations", "",
+                  ["https://x.com/1", "https://x.com/2", "https://x.com/3"])  # 3 different events
+    fine = Bullet("UNSMIL launches dialogue", [], "United Nations", "",
+                  ["https://x.com/1", "https://x.com/5", "https://x.com/6"])  # same event x3
+    a = overmerge_audit(ParsedReport(path="t", title="x", bullets=[over, fine]), u2a)
+    assert a["checked"] == 2
+    assert a["over_merged"] == 1  # only the first lumps different events
 
 
 def test_reused_url_detected():

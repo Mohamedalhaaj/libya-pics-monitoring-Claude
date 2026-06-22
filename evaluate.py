@@ -27,6 +27,7 @@ from utils.report_eval import (
     build_gold_profile,
     link_fidelity,
     llm_judge,
+    overmerge_audit,
     parse_pics_report,
     score_report,
 )
@@ -108,22 +109,25 @@ def main() -> None:
         print_profile(profile)
         return
 
+    # The collected data gives the real title of each linked article (used for
+    # the coverage ceiling, link fidelity, and the over-merge audit).
+    url_to_article = None
     monitored = None
-    if args.gold:
-        # The achievable ceiling is the outlets actually present in the collected
-        # data the report was built from; fall back to configured source names.
-        if Path(args.collected).exists():
-            with open(args.collected, encoding="utf-8-sig") as handle:
-                monitored = {row["source_name"] for row in csv.DictReader(handle)}
-        else:
-            try:
-                monitored = {s["name"] for s in load_sources(args.sources)}
-            except Exception:
-                monitored = None
+    if Path(args.collected).exists():
+        with open(args.collected, encoding="utf-8-sig") as handle:
+            rowlist = list(csv.DictReader(handle))
+        url_to_article = {_norm_url(r["url"]): (r["title"], r["language"]) for r in rowlist if r["url"]}
+        if args.gold:
+            monitored = {r["source_name"] for r in rowlist}
+    elif args.gold:
+        try:
+            monitored = {s["name"] for s in load_sources(args.sources)}
+        except Exception:
+            monitored = None
 
     report = parse_pics_report(args.target)
     gold = parse_pics_report(args.gold) if args.gold else None
-    card = score_report(report, profile, gold=gold, monitored=monitored)
+    card = score_report(report, profile, gold=gold, monitored=monitored, url_to_article=url_to_article)
 
     if args.llm_judge and gold is not None:
         try:
@@ -135,13 +139,16 @@ def main() -> None:
     print()
     print_scorecard(card, profile)
 
-    # Headline-vs-link fidelity audit (needs the collected data for real titles).
-    if Path(args.collected).exists():
-        with open(args.collected, encoding="utf-8-sig") as handle:
-            url_to_article = {
-                _norm_url(r["url"]): (r["title"], r["language"])
-                for r in csv.DictReader(handle) if r["url"]
-            }
+    # Headline-vs-link fidelity + over-merge audits (need the collected data).
+    if url_to_article is not None:
+        over = overmerge_audit(report, url_to_article)
+        card["over_merge"] = {k: v for k, v in over.items() if k != "examples"}
+        print("\n  merge quality (bullets linking ≥3 sources):")
+        print(f"    checked {over['checked']} | OVER-MERGED (different events lumped together):"
+              f" {over['over_merged']}  (gold 0)")
+        for head in over["examples"][:4]:
+            print(f"      ✗ {head[:70]}")
+
         fid = link_fidelity(report, url_to_article)
         card["link_fidelity"] = {k: v for k, v in fid.items() if k != "examples"}
         print("\n  headline ↔ link fidelity (English-source links):")

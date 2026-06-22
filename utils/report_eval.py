@@ -248,6 +248,41 @@ def _content_tokens(text: str) -> set[str]:
     return {t for t in re.findall(r"[a-z0-9]{3,}", text.lower()) if t not in _FIDELITY_STOP}
 
 
+_MERGE_STOP = set(
+    "في من على إلى عن مع التي الذي بعد بشأن حول الى ليبيا الليبية الليبي البعثة "
+    "the of in on for and with to from over into amid libya libyan".split()
+)
+
+
+def _merge_tokens(text: str) -> set[str]:
+    return {w for w in re.findall(r"[^\W\d_]{3,}", text) if w not in _MERGE_STOP}
+
+
+def overmerge_audit(report: ParsedReport, url_to_article: dict[str, tuple[str, str]]) -> dict:
+    """Flag bullets that merge sources reporting *different* events.
+
+    A correct multi-source bullet cites outlets covering the SAME event, so their
+    article titles share a common core. When a bullet links ≥3 articles whose
+    titles share fewer than 2 content words, it has lumped distinct stories
+    together (e.g. a UNSMIL launch + a criticism + a fatwa). Language-agnostic
+    (compares the linked titles to each other). The gold reports score 0 here.
+    """
+    over: list[str] = []
+    checked = 0
+    for bullet in report.bullets:
+        titles = [
+            url_to_article[_norm_url(u)][0]
+            for u in bullet.urls
+            if _norm_url(u) in url_to_article
+        ]
+        if len(titles) >= 3:
+            checked += 1
+            common = set.intersection(*[_merge_tokens(t) for t in titles])
+            if len(common) < 2:
+                over.append(bullet.text)
+    return {"checked": checked, "over_merged": len(over), "examples": over[:6]}
+
+
 def link_fidelity(report: ParsedReport, url_to_article: dict[str, tuple[str, str]]) -> dict:
     """Do bullets actually match the article they link to?
 
@@ -387,6 +422,7 @@ def score_report(
     profile: GoldProfile,
     gold: ParsedReport | None = None,
     monitored: set[str] | None = None,
+    url_to_article: dict[str, tuple[str, str]] | None = None,
 ) -> dict:
     """Produce a 0-100 scorecard with a transparent component breakdown."""
     m = report_metrics(report)
@@ -411,7 +447,15 @@ def score_report(
     in_band = profile.bullets_low <= n <= profile.bullets_high
     volume_pts = 100 if in_band else 100 * _ratio_score(n, profile.bullets_low)
     latin_pts = 100 * m["latin_source_ratio"]
-    style = statistics.mean([english_pts, dedup_pts, role_pts, volume_pts, latin_pts])
+    # Merge quality: penalise bullets that lump different events together (needs
+    # the collected data to read each linked article's title).
+    merge_pts = 100.0
+    overmerge = None
+    if url_to_article is not None:
+        overmerge = overmerge_audit(report, url_to_article)
+        if overmerge["checked"]:
+            merge_pts = 100 * (1 - overmerge["over_merged"] / overmerge["checked"])
+    style = statistics.mean([english_pts, dedup_pts, role_pts, volume_pts, latin_pts, merge_pts])
 
     components = {
         "structure": round(structure, 1),
@@ -431,6 +475,7 @@ def score_report(
         "role_prefix_ratio": round(m["role_prefix_ratio"], 3),
         "n_bullets": n,
         "gold_bullet_band": [profile.bullets_low, profile.bullets_high],
+        "over_merged_bullets": overmerge["over_merged"] if overmerge else None,
     }
 
     coverage = None

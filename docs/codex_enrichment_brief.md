@@ -33,12 +33,20 @@ to a `D-D Month` range; a single day is just `D Month`).
    sentence stating the news fact. Never start a bullet with the outlet name. No
    opinion or editorialising. Preserve proper nouns / transliterations of Libyan
    names (Tetteh, Boulos, Haftar, Dbeibeh, Menfi, Takala, Saleh…).
-3. **Deduplicate (non-UN).** When several outlets report the same story, produce
-   ONE bullet and cite every reporting outlet. Split into separate bullets only
-   when an outlet adds materially different information.
+3. **Deduplicate by EVENT, not by topic.** Merge several outlets into ONE bullet
+   **only when they report the same specific event** (the same announcement,
+   meeting, incident, or statement). Sources sharing a mere topic are NOT the
+   same story: a UN Mission *launch* of dialogue meetings, a Mufti's *fatwa
+   against* the Mission, an MP's *criticism* of the Mission, and an analyst's
+   *commentary* are **four separate bullets**, even though all mention UNSMIL.
+   Before attaching a second source, confirm its article is about the SAME event
+   as the bullet — if not, give it its own bullet. When in doubt, split. (Each
+   linked article must match the bullet; see rule 9.)
 4. **Never drop UN coverage as a duplicate.** UN items (UNSMIL, SRSG/DSRSG
    Tetteh/Koury, Security Council, UN agencies, international mediation,
-   humanitarian agencies) are combined when identical but kept even if repeated.
+   humanitarian agencies) are kept even if repeated — but still split by event
+   per rule 3: combine outlets only when they cover the *same* UN event, never
+   lump different UN stories into one bullet.
 5. **Attribution format.** End each bullet with ` – ` then the outlets joined by
    ` / `. **Every outlet name MUST be in Latin script** — if the data gives an
    outlet in Arabic (e.g. `شبكة تواصل الإخبارية`, `اليوم السابع`, `حفريات`),

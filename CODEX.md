@@ -73,6 +73,7 @@ report can clear it while under-merging. You must also hit the dedup target:
 | duplicate bullets | **0** (exact repeats) |
 | **vague/umbrella bullets** | **0** — every bullet states one specific fact, not "officials reported …" |
 | **headline ↔ link fidelity** | **0 mismatches** (English-source); each bullet must match the article it links |
+| **over-merged bullets** | **0** — a bullet linking ≥3 sources must have them all on the SAME event, not just the same topic (merge by event, not topic) |
 | boilerplate noise | 0 |
 | Arabic outlet names | **0** |
 | English headlines | 100% |
