@@ -62,17 +62,20 @@ python evaluate.py <your_report>.docx --collected output/libya_media_headlines.c
 ```
 
 For a **new date range there is no date-matched gold**, so the coverage component
-is not scored — drive the two that are, and aim for a conformance **total ≥ 90**:
+is not scored. A conformance total ≥ 90 is **necessary but not sufficient** — the
+report can clear it while under-merging. You must also hit the dedup target:
 
 | check | target |
 |---|---|
 | structure | 100 |
-| duplicate bullets | **0** |
+| **multi-source / dedup** | **≈ 0.20–0.30** (the `evaluate.py` "multi-source/dedup" line). If it's ~0.10–0.15 you UNDER-MERGED — fix before shipping. |
+| **bullet count** | **≈ the day's distinct *stories*, not the article count** — typically ~70–90 for a single day. ~1.5–2× that (e.g. ~140) means you listed the same story separately per outlet instead of merging. |
+| duplicate bullets | **0** (exact repeats) |
 | boilerplate noise | 0 |
+| Arabic outlet names | **0** |
 | English headlines | 100% |
 | sections in canonical order | yes |
 | role-prefix ratio | ~0.15 (`[HoR Member] Jehani: …`) |
-| distinct bullets | every one unique; volume scaled to the news of the period |
 
 (When you *do* have a same-dates human report, add
 `--gold path/to/that.docx` to also score outlet coverage.)
@@ -81,6 +84,13 @@ is not scored — drive the two that are, and aim for a conformance **total ≥ 
 
 ## Pitfalls that cost points — avoid them up front
 
+- **MERGE the same story across outlets (brief rule 3 — the #1 mistake).** If six
+  outlets report the same migrant shipwreck, that is **ONE bullet citing all six**
+  (`… – Reuters / New Arab / Shafaq (Arabic) / …`), not six separate bullets.
+  "No duplicate bullets" only forbids *exact* repeats — it does **not** excuse
+  listing the same story once per outlet. Under-merging is what turns a correct
+  ~80-bullet report into a bloated ~140-bullet one with a low dedup score. After
+  drafting, scan for near-identical bullets across the report and merge them.
 - **No duplicate bullets and no vague filler.** Each bullet = one distinct story,
   once. Never emit placeholders like "A Libya-related report covered domestic
   developments…". A shorter report of distinct bullets beats a padded one.
