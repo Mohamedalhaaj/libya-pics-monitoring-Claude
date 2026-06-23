@@ -101,6 +101,14 @@ umbrellas ("officials reported…", "international outlets linked…").
 **Pass 5 — Source credibility & attribution.** For every source ask "is this the
 outlet that actually reported it, and does the bullet attribute it correctly?"
 Full detail + real examples in [`docs/codex_qa_lessons.md`](docs/codex_qa_lessons.md).
+> **Do this first — it's the #1 recurring miss:** underline every **named entity**
+> (org, person, place, outlet) **and every scope word** ("and Tunisia", "and the
+> ICJ", "chambers", "several", "political figures") in each bullet, and confirm
+> **each is supported by one of that bullet's cited links.** Choosing the right
+> outlet is only half the job — the *sentence* must match what the links say. If a
+> claim isn't backed: add the source (often already in the CSV — search it), split
+> the bullet (two organisations = two bullets), or narrow the wording. Don't name a
+> second org, an extra country, or a vaguer group than the links support.
 - **Drop junk sources** even when the fact is true: content aggregators
   (MSN/Yahoo/Bing/ground.news), auto-translation portals (`*.vn`, machine-translated
   mirrors), and off-topic local papers running a wire (mlive.com, daily-sun.com —

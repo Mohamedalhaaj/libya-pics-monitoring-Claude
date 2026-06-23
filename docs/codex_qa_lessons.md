@@ -16,6 +16,17 @@ SOP's reading-comprehension checks that `evaluate.py` **cannot** see.
 > still contained the problems below. **The score cannot see a junk source, a
 > mismatched author, or an unsupported claim — only reading the article can.**
 
+> **⚠️ The #1 recurring miss (confirmed on the 22–23 re-run).** After this
+> guidance first shipped, the redo fixed **every** junk source (MSN, Vietnam.vn,
+> MLive, daily-sun all gone) and correctly split the multi-municipality bullet —
+> but it **still** shipped bullets whose *sentence* names something the *cited
+> link does not support*: an org that is named but not cited (ICJ), a vague
+> "political figures" hiding one named person, an outlet named in the sentence
+> that isn't the linked one ("Sada"), and a wrong actor ("chambers" vs the GNU).
+> **Choosing the right outlet is only HALF the job. Every named entity AND every
+> scope word in the bullet must be backed by one of its cited links** (§2–§3).
+> Run that check as hard as the junk-source check.
+
 ---
 
 ## 1. Source credibility — never cite an aggregator, auto-translation, or random local repost
@@ -54,25 +65,41 @@ with an **MSN** copy of AGBI; `#40` Najim sentence on **daily-sun.com**.
 - `#62` — *"[Analyst] OilPrice.com argued … – Anas Alhajji"* linking Anas
   Alhajji's **Substack**. Three errors in one bullet: a bracket-role on a
   website; the sentence names "OilPrice.com"; the real author/source is
-  **Anas Alhajji**. → *"[Energy economist] Anas Alhajji argues … – Anas Alhajji."*
+  **Anas Alhajji**. → *"[Analyst] Anas Alhajji argues … – Anas Alhajji."*
+  **(FIXED on the re-run.)**
 - `#60` — *"**Sada** reports that factory generators…"* but the only link is
   **New Arab** (alaraby.co.uk). → drop "Sada", attribute to New Arab.
+  **(RECURRED on the re-run — the source was fine, the sentence still named the
+  wrong outlet. Don't name an outlet in the sentence that isn't the linked one.)**
 
-## 3. Every entity named in the headline needs a supporting link
-*SOP §7.2 (do not combine different actors), §2 (completeness before compression).*
+## 3. Every CLAIM in the headline must be supported by a cited link — the #1 recurring miss
+*SOP §7.2 (do not combine different actors), §2 (completeness), §11.3 (link↔headline).*
 
-If the headline names N organisations / municipalities / people, **each one must
-have a link that supports it.** If you only have one source, name only what it
-covers — or split into separate bullets, or pull the missing outlets from the CSV.
+Read your finished bullet and underline **every named entity** (org, person,
+institution, place) **and every scope word** ("and Tunisia", "and the ICJ",
+"chambers", "several", "political figures"). **Each one must be backed by one of
+the bullet's cited links.** If a claim isn't supported by a cited article:
+1. **Add the source** — it is often already in the CSV (search it before deleting),
+2. or **split** the bullet so each actor/claim sits with its own source,
+3. or **narrow the sentence** to exactly what the cited links say.
+
+Never name a second organisation, an extra country, or a vaguer/larger group than
+your links actually support.
 
 **22–23 examples:**
-- `#39` — *"Amnesty **and the International Commission of Jurists** condemn EU
-  cooperation with Libya **and Tunisia**"* — both links are **Amnesty / Libya**
-  only; the ICJ (and the Tunisia scope) had **no** supporting source. → give ICJ
-  its own bullet with its own link (as the gold does).
-- `#15` — *"**Kufra, Abyar and Green Mountain** municipalities endorse…"* — the
-  single Al Menassa link is **only about Kufra**. → add the other two articles
-  (they were in the data) or narrow the headline.
+- `#41`/`#39` — *"Amnesty **and the International Commission of Jurists** condemn
+  EU cooperation with Libya **and Tunisia**"* links **only Amnesty** (Rai Al-Youm,
+  Le Monde). **RECURRED on the re-run.** The ICJ statement — which is exactly what
+  adds "Tunisia" — **exists in the CSV** ("ICJ calls for an end to abusive
+  migration externalization practices in Libya and Tunisia") but was **not cited**.
+  → split into two bullets (Amnesty/Libya · ICJ/Libya & Tunisia) **or** cite the
+  ICJ article. *(Two organisations = two statements; don't merge them under one.)*
+- `#15` — *"**Kufra, Abyar and Green Mountain** municipalities endorse…"* with one
+  Kufra link. → **FIXED on the re-run**: split into three bullets, each with its
+  own Al Menassa article. **This is the model fix — do the same for #41.**
+- `#68` — *"Libyan **chambers** discuss opening an Arab Academy branch"* but the
+  cited RNA article says the **Government of National Unity (GNU)** does.
+  **RECURRED.** → name the actor the source names.
 
 ## 4. Do not generalise one named person into a vague group
 *SOP §9 (no vague/category labels); brief Pass 4 (specificity).*
@@ -81,9 +108,11 @@ If the article is one person's statement, **name the person and role**. "Politic
 figures / critics / officials / commentators" is only for a genuine multi-source
 aggregate.
 
-**22–23 example:** `#28` *"Libyan political figures call for reviewing diplomatic
-representation…"* when the article is one named person (**Al-Thulthi**) on a
-specific point. → *"[<role>] Al-Thulthi questions …"*
+**22–23 example:** `#28`/`#30` *"Libyan political figures call for reviewing
+diplomatic representation…"* when the article is one named person (**Al-Thulthi**,
+questioning ambassador al-Sani). → *"[<role>] Al-Thulthi questions …"*
+**RECURRED on the re-run** — "political figures / critics / officials" is a smell:
+open the link and name who actually spoke.
 
 ## 5. Same-event consolidation cuts BOTH ways — do not under-source the lead story
 *SOP §11.1 (list every outlet that covered the same event), §7.2.*
@@ -131,8 +160,10 @@ report citing that wire is likely **out of window.** (The in-window angle is the
 - [ ] **Displayed outlet name == the linked URL's outlet** for every source.
 - [ ] **No `[Role]` bracket on a website, agency-as-publisher, or category** —
       persons only, role verified.
-- [ ] **Every org/municipality/person named in a headline has a link** that
-      supports it; otherwise narrowed or split.
+- [ ] **Underline every named entity AND scope word in each bullet** (org, person,
+      place, "and Tunisia", "and the ICJ", "chambers", "several") — **each is backed
+      by a cited link.** If not: add the source (check the CSV), split, or narrow.
+- [ ] **Two organisations/statements = two bullets** (don't fuse Amnesty + ICJ).
 - [ ] **No specific named person flattened into "officials/figures/critics".**
 - [ ] **Flagship stories carry all same-event outlets** from the CSV, not 1–2.
 - [ ] **Each source's publication date is inside the window** (follow-ups OK).
