@@ -126,6 +126,15 @@ Full detail + real examples in [`docs/codex_qa_lessons.md`](docs/codex_qa_lesson
   *same* event (the fix for over-merging is not to drop same-event outlets).
 - **Each source's publication date must be inside the window** (older event OK only
   via an in-window follow-up).
+- **Never default to `[Analyst]`** — a `[Role]` must be the person's verified real
+  role (look them up; e.g. Mohamed Baiou is a journalist/former media-authority head,
+  not an analyst). If you can't verify it, use no bracket.
+- **No headline starts with the outlet** — "Al Shahed cites…", "Sada reports…",
+  "Coverage of … warns…", "Libya is reported to…" are wrong. Lead with the FACT; the
+  outlet goes only after the en dash.
+- **Analysis/Report/Opinion/Feature items go under Varieties**, not scattered in
+  Politics/Economy/Environment; add a short neutral summary. Plain news carries no
+  Analysis/Report prefix.
 
 **Use the browser** whenever you are unsure two articles are the same event, or
 whether a headline matches its link: open the URLs and read them.

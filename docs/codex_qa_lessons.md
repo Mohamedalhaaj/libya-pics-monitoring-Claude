@@ -141,14 +141,54 @@ report citing that wire is likely **out of window.** (The in-window angle is the
 `#42` Tobruk body-recovery follow-up — cite that instead.)
 
 ## 7. Verify roles, institutions, committee names and numbers against the article
-*SOP §8.4 (consistent names/roles), §24 (article-level verification); brief rule 10.*
+*SOP §8.4 (consistent names/roles), §9 (role labels), §24 (verification); brief rule 10.*
 
+- **`[Analyst]` is NOT a default label — it is the #2 recurring miss.** A `[Role]`
+  bracket must be the person's **actual, verified role**, not a catch-all for
+  "someone who commented." Look the person up.
+  - `#10` — Mohamed Baiou is labelled **[Analyst]** but he is a **journalist /
+    political writer** (former head of the Libyan Media Institution, ex-Gaddafi-era
+    spokesman). Calling a partisan media figure "[Analyst]" is both wrong and lends
+    false neutrality. → use his real role (e.g. `[Journalist]`/`[Writer]`) or, for a
+    pure columnist/commentator, **no bracket** — never invent "[Analyst]".
+  - The same caution applies to every commented opinion (#21, #22, #24, #31): verify
+    each speaker's role; if you cannot, omit the bracket rather than guess "[Analyst]".
 - `#30` — *"4+4 committee"*: the well-known body is the **6+6** committee —
   confirm which the article means before printing.
 - `#68` — *"Libyan **chambers** discuss…"* but the sources say the **GNU
   (government)** discusses it. Confirm the actor.
 - Names/numbers must appear in the source verbatim (e.g. Najim **"seven years and
   four months"** — confirmed correct; never round or invent — see brief rule 10).
+
+## 8. Headlines lead with the FACT — never "Outlet reports/cites that…"
+*SOP §8.1 (lead with the new fact, action or statement).*
+
+The outlet name belongs **only** in the source line after the en dash — never inside
+the headline as the subject. Do not write "Al Shahed cites…", "Sada reports…",
+"Reports describe…", "Coverage of … warns…", "Libya is reported to be…", "market
+coverage putting…". State the news directly; the link/source line carries the
+attribution.
+- WRONG `#02` — *"**Al Shahed cites** UNSMIL saying Structured Dialogue outputs
+  reflect proposals…"* → *"UNSMIL says Structured Dialogue outputs reflect the
+  proposals of thousands of Libyans. – Al Shahed (Arabic)."*
+- Same fix for `#44` ("Reports describe…"), `#46` ("Local reporting warns…"),
+  `#51` ("Coverage of family crimes warns…"), `#54` ("…market coverage putting…"),
+  `#55` ("Libya is reported to be…"), `#60` ("Sada reports…"), `#90` ("…chess
+  coverage highlights…"). **Recurred across 8 bullets on the 22–23 re-run.**
+- (Note: `#02` is also the **same UNSMIL statement** as `#01` written twice — once
+  in English, once in Arabic. Merge into one bullet citing both, per Pass 3.)
+
+## 9. Analysis / Report / Opinion / Feature items belong in the Varieties section
+*SOP §13 (Varieties content-type prefixes), §10 (classification).*
+
+The `Analysis |`, `Report |`, `Opinion |`, `Feature |`, `Think Tank |`, `Podcast |`
+and `Documentary |` prefixes are a **Varieties** device. Place such items under
+**Varieties**, not scattered through the news sections — and add the short neutral
+summary paragraph the SOP asks for beneath substantive analysis/feature items.
+- `#19`, `#20` (*Analysis |*) sit in **Politics**; `#73` (*Report |*), `#74`
+  (*Opinion |*) in **Economy**; `#80` (*Report |*) in **Environment**. → move to
+  Varieties. (A plain straight-news item should not carry an Analysis/Report prefix
+  at all — drop the prefix or reclassify.)
 
 ---
 
@@ -159,7 +199,12 @@ report citing that wire is likely **out of window.** (The in-window angle is the
       wire. If it's a wire, cite the wire (AP/Reuters/AFP/ANSA).
 - [ ] **Displayed outlet name == the linked URL's outlet** for every source.
 - [ ] **No `[Role]` bracket on a website, agency-as-publisher, or category** —
-      persons only, role verified.
+      persons only, role verified. **Never default to `[Analyst]`** — use the real
+      role or no bracket (e.g. Mohamed Baiou = journalist, not analyst).
+- [ ] **No headline starts with the outlet** ("Al Shahed cites…", "Sada reports…",
+      "Coverage of … warns…") — lead with the fact; the outlet goes after the en dash.
+- [ ] **Analysis/Report/Opinion/Feature items are in the Varieties section**, not in
+      Politics/Economy/Environment, and carry a short neutral summary.
 - [ ] **Underline every named entity AND scope word in each bullet** (org, person,
       place, "and Tunisia", "and the ICJ", "chambers", "several") — **each is backed
       by a cited link.** If not: add the source (check the CSV), split, or narrow.
@@ -182,5 +227,5 @@ report citing that wire is likely **out of window.** (The in-window angle is the
   draft's generic `[Media Analysis]`/`[Court Ruling]` category tags.
 - Factual specifics correct (Najim = seven years and four months).
 
-These are the SOP working as intended. The items in §1–§7 are the remaining
+These are the SOP working as intended. The items in §1–§9 are the remaining
 reading-only gaps — close them in the self-audit (see `CODEX.md` **Pass 5**).
