@@ -6,6 +6,13 @@ pipeline normally hands to the Claude API (`utils/enrich.py`); the brief lets
 another model do the same job. Reference the gold human reports in `samples/*.docx`
 for tone and layout.
 
+> **Also read before/while writing:** [`codex_qa_lessons.md`](codex_qa_lessons.md)
+> — link-fidelity, source-credibility and attribution rules distilled from QA
+> review (no junk/aggregator sources, displayed outlet = linked URL, every named
+> entity needs a supporting link, don't under-source the flagship story). These
+> are the reading-only checks `evaluate.py` can't catch; enforce them in the
+> `CODEX.md` self-audit (Pass 5). Authority: `PICS_Master_SOP_Codex_Operational_Edition.docx`.
+
 ## Input
 
 `output/libya_media_headlines.csv` (UTF-8, columns):

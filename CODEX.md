@@ -98,6 +98,27 @@ sections. Merge each into ONE bullet (one section, citing all outlets).
 **Pass 4 — Specificity.** Every bullet states one concrete fact. Delete vague
 umbrellas ("officials reported…", "international outlets linked…").
 
+**Pass 5 — Source credibility & attribution.** For every source ask "is this the
+outlet that actually reported it, and does the bullet attribute it correctly?"
+Full detail + real examples in [`docs/codex_qa_lessons.md`](docs/codex_qa_lessons.md).
+- **Drop junk sources** even when the fact is true: content aggregators
+  (MSN/Yahoo/Bing/ground.news), auto-translation portals (`*.vn`, machine-translated
+  mirrors), and off-topic local papers running a wire (mlive.com, daily-sun.com —
+  red flag: the headline doesn't mention Libya). Cite the wire (AP/Reuters/AFP/ANSA)
+  or a Libyan/regional outlet instead.
+- **Displayed outlet == the linked URL's outlet**; if the sentence names an outlet
+  or author, it must be the linked one (e.g. don't write "OilPrice.com argued" then
+  link Anas Alhajji's Substack, or "Sada reports" then link New Arab).
+- **`[Role]` only on a named person**, role verified — never on a website, a wire
+  agency-as-publisher, or a category.
+- **Every org/municipality/person named in a headline needs a supporting link**;
+  otherwise narrow the headline or split it (don't claim "Amnesty and the ICJ" or
+  "Kufra, Abyar and Green Mountain" with only one source).
+- **Don't under-source the flagship story**: re-attach every CSV outlet on the
+  *same* event (the fix for over-merging is not to drop same-event outlets).
+- **Each source's publication date must be inside the window** (older event OK only
+  via an in-window follow-up).
+
 **Use the browser** whenever you are unsure two articles are the same event, or
 whether a headline matches its link: open the URLs and read them.
 
