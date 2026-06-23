@@ -91,6 +91,16 @@ to a `D-D Month` range; a single day is just `D Month`).
    a bullet unless that article supports the bullet's exact claim. Each cited
    outlet's URL must be the **specific article** for THIS story — never reuse one
    article's URL on another bullet (a link must appear on exactly one bullet).
+10. **Faithfulness — never assert a specific the source doesn't state.** Every
+   name, number, sentence length, charge, place, date and figure in a bullet must
+   come from the cited article(s). Do NOT add a person, co-defendant, figure or
+   number from memory or inference. Copy specifics verbatim from the source: if
+   the article says "seven years and four months," the bullet says that — never
+   "life imprisonment"; if it names "Najim," do not add "al-Kikli." When the
+   source doesn't give a detail, leave it out rather than guess. (Real failure
+   seen: a 7-year-and-4-month sentence for one official was written as "life
+   imprisonment for al-Kikli and Najim, in absentia" — none of which the cited
+   articles said.) When unsure of a name or number, re-open the link and read it.
 
 ## Structure
 

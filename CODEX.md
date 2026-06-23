@@ -71,6 +71,11 @@ bullet's exact event.
   story its own bullet if it matters).
 - If the headline matches none of its links → rewrite the headline to the article,
   or drop the bullet.
+- **Verify every SPECIFIC against the article (rule 10), not just the topic:** each
+  name, number, sentence length, charge, place and date must appear in the source.
+  Do not add a person, co-defendant or figure that isn't there, and never change a
+  number (e.g. "seven years and four months" must not become "life"). If a detail
+  isn't in the article, drop it. When unsure of a name/number, re-open the link.
 
 **Pass 2 — Same-event merge (every multi-source bullet).**
 Write the bullet's event in ≤5 words (e.g. "UNSMIL launches dialogue meetings").
