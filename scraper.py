@@ -170,6 +170,20 @@ async def scrape_source(
     logger.info("Collecting source=%s url=%s", source_id, source["url"])
     try:
         raw_articles, final_url, method = await _collect_articles(source, fetcher, keywords)
+        # Critical Libyan outlets: also pull `site:<domain>` and merge, every run.
+        # Their feeds/listing pages are shallow (~last 10 items), so on a busy day
+        # real stories fall off even when the source scraped "ok" (e.g. LANA, Ean
+        # Libya). Skip when the empty-source fallback already ran site: for us.
+        if source_id in CRITICAL_SOURCE_IDS and not method.startswith("gnews(site:"):
+            site_articles, _ = await _site_query_fallback(source, keywords)
+            if site_articles:
+                merged = deduplicate_articles(raw_articles + site_articles)
+                if len(merged) > len(raw_articles):
+                    logger.info(
+                        "Backfilled %s via site: (%s -> %s raw)", source_id, len(raw_articles), len(merged)
+                    )
+                    method = f"{method}+site:"
+                raw_articles = merged
         articles = [
             article
             for article in raw_articles

@@ -55,8 +55,13 @@ Only proceed to writing the report once these pass.
 A few outlets (Al Wasat, Libya Observer, Alsaaa 24, Reuters/BBC via HTML, …) block
 the headless browser with a 403 and show as `empty`. Two layers now recover them
 automatically: the Google News fan-out, **and** a per-source `site:<domain>`
-Google-News query that fires whenever a source's own scrape returns nothing
-(`method=gnews(site:)` in the log). So most empty rows self-heal.
+Google-News query that (a) fires whenever a source's own scrape returns nothing
+(`method=gnews(site:)`), and (b) runs **every time for critical Libyan outlets**
+and merges into their scrape (`method=…+site:`) — their feeds are shallow (~last
+10 items) so a busy day drops real stories even when they scrape `ok` (e.g. LANA,
+Ean Libya). So most gaps self-heal. *Caveat:* Google News doesn't index every item
+of a high-volume wire like LANA, so a few LANA items can still slip — for full LANA
+recall, deepen its listing scrape directly.
 
 > **Why this matters (24–25 June 2026):** Akhbar Libya 24 — a top-3 workhorse —
 > 403-blocked the scraper *and* wasn't surfaced by the topic fan-out, so it
