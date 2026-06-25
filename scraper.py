@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import logging
+import urllib.parse
 from pathlib import Path
 
 from datetime import date, datetime
@@ -43,6 +44,44 @@ DEFAULT_KEYWORDS = [
     "درنة",
     "البعثة الأممية",
 ]
+
+# Workhorse Libyan outlets that publish daily — if one returns nothing it is
+# almost certainly a scrape failure (bot-block / dead URL), not a quiet news
+# day. The scrape-health gate flags these. A source may also opt in per-config
+# with ``"critical": true``.
+CRITICAL_SOURCE_IDS = frozenset({
+    "akhbar_libya_24", "al_wasat", "libya_observer", "lana", "lana_6", "lana_21",
+    "ean_libya", "al_shahed", "al_marsad", "al_menassa", "libya_24", "libya_review",
+})
+
+
+def _registrable_domain(url: str) -> str:
+    """Bare host for a source URL (drops scheme, ``www.`` and any path)."""
+    host = urllib.parse.urlsplit(url if "://" in url else f"https://{url}").netloc.lower()
+    return host[4:] if host.startswith("www.") else host
+
+
+async def _site_query_fallback(
+    source: dict, keywords: list[str]
+) -> tuple[list[Article], str]:
+    """Recover a source that the direct scrape couldn't reach.
+
+    Many outlets (e.g. Akhbar Libya 24) return 403/empty to the scraper while
+    remaining fully indexed by Google News. Query ``site:<domain>`` so a
+    bot-blocked but indexed source is backfilled instead of silently dropped.
+    """
+    domain = _registrable_domain(source.get("url", ""))
+    if not domain:
+        return [], ""
+    language = source.get("language", "en")
+    term = "ليبيا" if language == "ar" else "Libya"
+    url = google_news_url(f"site:{domain} {term}", language)
+    try:
+        text = await fetch_feed_text(url)
+    except Exception as exc:  # noqa: BLE001 - fallback is best-effort
+        logger.debug("site: fallback failed for %s: %s", source["id"], exc)
+        return [], url
+    return deduplicate_articles(FeedListParser(source, keywords).parse(text)), url
 
 
 async def _collect_articles(
@@ -104,7 +143,19 @@ async def _collect_articles(
                 logger.debug("Autodiscovered feed failed for %s: %s", source["id"], exc)
 
     parser = get_parser(source["parser"])(source, keywords)
-    return parser.parse(result.html), result.final_url, "html"
+    html_articles = parser.parse(result.html)
+    if html_articles:
+        return html_articles, result.final_url, "html"
+
+    # The page returned nothing — usually a 403/bot-block or a stale selector.
+    # Don't drop the source: try to recover it from Google News by domain.
+    site_articles, site_url = await _site_query_fallback(source, keywords)
+    if site_articles:
+        logger.info(
+            "Recovered %s via site: fallback (%s articles)", source["id"], len(site_articles)
+        )
+        return site_articles, site_url, "gnews(site:)"
+    return html_articles, result.final_url, "html"
 
 
 async def scrape_source(
@@ -146,6 +197,43 @@ async def scrape_source(
         )
 
 
+def report_scrape_health(
+    sources: list[dict],
+    verifications: list[SourceVerification],
+    fail_on_critical: bool = False,
+) -> None:
+    """Surface sources that returned nothing so a silent scrape gap can't ship.
+
+    A source marked ``"critical": true`` in the source config that yields no
+    articles trips the gate (``docs/scraping_sop.md`` quality gate): the report
+    must not be built on a scrape that lost a workhorse outlet.
+    """
+    by_id = {s["id"]: s for s in sources}
+    problems = [v for v in verifications if v.status != "ok" or v.articles_found == 0]
+    logger.info(
+        "Scrape health: %s ok, %s empty/failed of %s sources",
+        len(verifications) - len(problems),
+        len(problems),
+        len(verifications),
+    )
+    critical_misses = []
+    for v in problems:
+        is_critical = v.source_id in CRITICAL_SOURCE_IDS or bool(by_id.get(v.source_id, {}).get("critical"))
+        logger.warning("  no articles: %s (%s)%s", v.source_name, v.status, " [CRITICAL]" if is_critical else "")
+        if is_critical:
+            critical_misses.append(v.source_name)
+    if critical_misses:
+        logger.error(
+            "SCRAPE-HEALTH GATE: %s critical source(s) returned nothing: %s. "
+            "Likely a bot-block (403) or dead URL — backfill before building the "
+            "report (see docs/scraping_sop.md).",
+            len(critical_misses),
+            ", ".join(critical_misses),
+        )
+        if fail_on_critical:
+            raise SystemExit(2)
+
+
 async def run(args: argparse.Namespace) -> None:
     setup_logging(args.log_file, args.verbose)
     output_dir = ensure_output_dir(args.output_dir)
@@ -178,6 +266,8 @@ async def run(args: argparse.Namespace) -> None:
             verifications.append(verification)
 
     all_articles.sort(key=lambda article: article.published_at or datetime.min, reverse=True)
+
+    report_scrape_health(sources, verifications, fail_on_critical=args.fail_on_empty_critical)
 
     report_date = format_report_date(args.report_date, start_date, end_date)
     report = build_report(all_articles, report_date, enrich=not args.no_enrich, model=args.model)
@@ -265,6 +355,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--keyword", action="append", default=[], help="Additional Arabic or English keyword filter.")
     parser.add_argument("--keep-undated", action="store_true", help="Keep articles where the source does not expose a date.")
+    parser.add_argument(
+        "--fail-on-empty-critical",
+        action="store_true",
+        help="Exit non-zero if a source marked \"critical\" in the config returns no articles (scrape-health gate).",
+    )
     parser.add_argument("--timeout", type=int, default=30, help="Browser timeout per page in seconds.")
     parser.add_argument("--retries", type=int, default=3, help="Fetch retry attempts per source.")
     parser.add_argument("--retry-delay", type=float, default=2.0, help="Base retry delay in seconds.")
