@@ -82,12 +82,18 @@ to a `D-D Month` range; a single day is just `D Month`).
    The gold report brackets a role on ~15% of bullets; match that. Infer the role
    from the source text (HoR Member, HCS Member, Mufti, SRSG, Minister, analyst…).
 7. **One sentence per bullet.** Factual, present tense where natural.
-8. **No duplicate or filler bullets.** Every bullet is a distinct story and
-   appears exactly once — never repeat the same headline (the gold report has
-   zero duplicates). Do NOT emit vague placeholder bullets such as "A
-   Libya-related report covered domestic developments" or "Regional talks
-   addressed Libya"; if you cannot state a specific fact, drop the item. A
-   shorter report of distinct bullets beats a padded one with repeats.
+8. **No duplicate or filler bullets — but cover EVERY distinct story.** Every
+   bullet is a distinct story appearing exactly once (zero duplicates). Do NOT emit
+   vague placeholders ("A Libya-related report covered domestic developments");
+   if you cannot state a specific fact, drop *that* item. But "padding" means
+   *repeats and filler*, **not** a real but minor story. **Completeness mandate
+   (standing user instruction, overrides the SOP's low-value-exclusion):** include
+   **every distinct in-window Libya story in the data** — a single ministry meeting,
+   a local council statement, a municipal project, a court case, a sports result, an
+   op-ed all get a bullet. The report must be exhaustive, only de-duplicated; a draft
+   far below the number of distinct stories in the data has dropped real coverage.
+   Exclude only non-stories: exact duplicates, homepages/tag pages, broken links,
+   non-Libya items, raw social posts.
 9. **Fidelity — each bullet must match the article(s) it cites.** Write what the
    cited article actually reports; the headline and its link must be about the
    SAME story. Never write a generic umbrella sentence over several stories

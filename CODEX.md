@@ -6,6 +6,30 @@ every time: **collect → write per the brief → self-check → iterate.**
 
 ---
 
+## Completeness mandate — write the FULL report, not the highlights (controlling instruction)
+
+**Standing user instruction (overrides any condensation/low-value-exclusion in the
+SOP — SOP §19.1 precedence #1):** the report must contain **every distinct
+in-window Libya story in the data, not just the major ones.** A daily monitoring
+report is meant to be exhaustive.
+
+- **One bullet per distinct event — and keep ALL of them.** Do **not** omit a real
+  story because it looks "minor", "routine", or low-news-value (a single ministry
+  meeting, a local council statement, a municipal project, a sports result, a court
+  case, an op-ed). If it's a distinct in-window Libya item with a usable source, it
+  gets a bullet.
+- **The only things you exclude** are genuine non-stories: exact duplicates,
+  homepages/tag/category pages, broken/unverifiable links, non-Libya items, and raw
+  social posts. "Low news value" is **not** an exclusion reason here.
+- **This is not licence to un-merge.** Same-event coverage from many outlets is still
+  **one** bullet citing all of them (brief rule 3). Completeness means *more distinct
+  stories*, never the same story repeated per outlet.
+- **Expected size:** ≈ the number of distinct stories in the window. A busy single
+  day runs well past 100 bullets; a multi-day window proportionally more (a 4-day
+  window can be 150–250). If your draft is far below the distinct-story count, you
+  dropped real stories — go back and add them. **Cover the whole dataset; don't stop
+  at the headlines.**
+
 ## Quickstart for a new report
 
 Replace `START`/`END` with the coverage dates (ISO `YYYY-MM-DD`), e.g.
@@ -157,7 +181,7 @@ report can clear it while under-merging. You must also hit the dedup target:
 |---|---|
 | structure | 100 |
 | **multi-source / dedup** | **≈ 0.20–0.30** (the `evaluate.py` "multi-source/dedup" line). If it's ~0.10–0.15 you UNDER-MERGED — fix before shipping. |
-| **bullet count** | **≈ the day's distinct *stories*, not the article count** — typically ~70–90 for a single day. ~1.5–2× that (e.g. ~140) means you listed the same story separately per outlet instead of merging. |
+| **bullet count** | **= the number of distinct in-window stories — cover them ALL** (completeness mandate). Not a fixed cap: a busy single day runs past 100, a 4-day window 150–250. "Too high" only ever comes from **un-merged duplicates** (same story per outlet) or vague filler — **never** from including a real but minor story. Far below the distinct-story count = you dropped real coverage. |
 | duplicate bullets | **0** (exact repeats) |
 | **vague/umbrella bullets** | **0** — every bullet states one specific fact, not "officials reported …" |
 | **headline ↔ link fidelity** | **0 mismatches** (English-source); each bullet must match the article it links |
@@ -184,7 +208,9 @@ report can clear it while under-merging. You must also hit the dedup target:
   drafting, scan for near-identical bullets across the report and merge them.
 - **No duplicate bullets and no vague filler.** Each bullet = one distinct story,
   once. Never emit placeholders like "A Libya-related report covered domestic
-  developments…". A shorter report of distinct bullets beats a padded one.
+  developments…". "Padding" means *repeats and vague filler* — **not** a real but
+  minor story. Per the completeness mandate, never drop a distinct in-window story
+  because it seems small; the report should be exhaustive, only de-duplicated.
 - **Tag only Arabic outlets** with `(Arabic)`; **never** `(English)`.
 - **Emit each of the 8 sections exactly once** — don't repeat a section heading.
 - **List every outlet that reported a story** (they are in the CSV), but **never

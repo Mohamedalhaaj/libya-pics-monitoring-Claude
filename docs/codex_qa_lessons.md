@@ -194,6 +194,11 @@ summary paragraph the SOP asks for beneath substantive analysis/feature items.
 
 ## Pre-delivery checklist (run on the finished DOCX, reading each link)
 
+- [ ] **COMPLETENESS: bullet count ≈ the number of distinct in-window stories in the
+      data** — every distinct Libya story is present, including minor/routine ones
+      (ministry meetings, local councils, court cases, sports, op-eds). A draft far
+      below the distinct-story count dropped real coverage. (Padding = repeats/filler
+      only; never a real story. See CODEX.md "Completeness mandate".)
 - [ ] **Every source is a real newsroom** for that story — no MSN/Yahoo/Bing
       aggregators, no `*.vn`/auto-translation, no off-topic local paper running a
       wire. If it's a wire, cite the wire (AP/Reuters/AFP/ANSA).
