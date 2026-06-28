@@ -27,6 +27,8 @@ OUTLET_ALIASES: dict[str, str] = {
     "العربية": "Al Arabiya",
     "صحيفة الساعة 24": "Alsaaa 24",
     "الساعة 24": "Alsaaa 24",
+    "تليكسبريس": "Telexpresse",
+    "مركز المستقبل": "Future Center",
     "القدس العربي": "Al Quds Al Arabi",
     "الجزيرة نت": "Al Jazeera",
     "الجزيرة": "Al Jazeera",

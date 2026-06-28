@@ -52,6 +52,8 @@ DEFAULT_KEYWORDS = [
 CRITICAL_SOURCE_IDS = frozenset({
     "akhbar_libya_24", "al_wasat", "libya_observer", "lana", "lana_6", "lana_21",
     "ean_libya", "al_shahed", "al_marsad", "al_menassa", "libya_24", "libya_review",
+    "al_saaa_24", "libya_al_ahrar", "libya_herald", "address_libya", "rna_reportage",
+    "libya_update",
 })
 
 
