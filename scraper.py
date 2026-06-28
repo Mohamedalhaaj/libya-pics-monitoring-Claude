@@ -143,6 +143,57 @@ async def _date_archive_backfill(
     return articles
 
 
+async def _paginate_backfill(
+    source: dict, fetcher: BrowserFetcher, keywords: list[str], start_date, end_date
+) -> list[Article]:
+    """Fetch deeper listing/feed pages so a multi-day window isn't truncated to a
+    source's first ~10 recent items. Two patterns cover the non-date-permalink
+    Libyan outlets: WordPress RSS feeds page via ``?paged=N`` and carry dates
+    (RNA, Al Shahed); LANA's listing pages via ``category.php?…&page=N``.
+    """
+    start = start_date.date() if hasattr(start_date, "date") else start_date
+    out: list[Article] = []
+
+    def _all_before_window(arts):
+        return bool(start) and arts and all(
+            a.published_at and a.published_at.date() < start for a in arts)
+
+    feed = source.get("feed")
+    if feed:
+        base = feed.rstrip("/")
+        sep = "&" if "?" in base else "?"
+        for paged in range(2, 7):
+            try:
+                text = await fetch_feed_text(f"{base}{sep}paged={paged}")
+            except Exception:
+                break
+            arts = FeedListParser(source, keywords).parse(text)
+            if not arts:
+                break
+            out.extend(arts)
+            if _all_before_window(arts):
+                break
+        return out
+
+    m = _re.search(r"([?&]page=)(\d+)", source.get("url", ""))
+    if m:
+        url = source["url"]
+        parser = get_parser(source["parser"])(source, keywords)
+        for pg in range(2, 7):
+            paged_url = url[: m.start(2)] + str(pg) + url[m.end(2):]
+            try:
+                res = await fetcher.fetch(paged_url)
+            except Exception:
+                break
+            arts = parser.parse(res.html)
+            if not arts:
+                break
+            out.extend(arts)
+            if _all_before_window(arts):
+                break
+    return out
+
+
 async def _collect_articles(
     source: dict,
     fetcher: BrowserFetcher,
@@ -254,6 +305,18 @@ async def scrape_source(
                         "Backfilled %s via date-archive (%s -> %s raw)", source_id, len(raw_articles), len(merged)
                     )
                     method = f"{method}+archive"
+                raw_articles = merged
+        # Critical sources: page deeper into feeds/listings (RNA, Al Shahed, LANA)
+        # so a 4-day window isn't cut to the first ~10 items.
+        if source_id in CRITICAL_SOURCE_IDS:
+            paged = await _paginate_backfill(source, fetcher, keywords, start_date, end_date)
+            if paged:
+                merged = deduplicate_articles(raw_articles + paged)
+                if len(merged) > len(raw_articles):
+                    logger.info(
+                        "Backfilled %s via pagination (%s -> %s raw)", source_id, len(raw_articles), len(merged)
+                    )
+                    method = f"{method}+paged"
                 raw_articles = merged
         articles = [
             article
