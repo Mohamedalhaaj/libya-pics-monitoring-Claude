@@ -6,7 +6,9 @@ import logging
 import urllib.parse
 from pathlib import Path
 
-from datetime import date, datetime
+import html as _html
+import re as _re
+from datetime import date, datetime, timedelta
 
 from parsers import get_parser
 from parsers.feed import FeedListParser
@@ -84,6 +86,61 @@ async def _site_query_fallback(
         logger.debug("site: fallback failed for %s: %s", source["id"], exc)
         return [], url
     return deduplicate_articles(FeedListParser(source, keywords).parse(text)), url
+
+
+async def _date_archive_backfill(
+    source: dict, fetcher: BrowserFetcher, start_date, end_date
+) -> list[Article]:
+    """Crawl ``/YYYY/MM/DD/`` archives per day for WordPress date-permalink sources.
+
+    Listing/category pages are shallow and often hide per-article dates, so the
+    parser silently drops a busy day's stories (this lost ~20 Al Marsad articles
+    over 25-28 June). The dated archive lists a full day's output, paginates, and
+    carries the date in the URL — giving complete in-window coverage. Sources that
+    don't use date permalinks (LANA, Libya Observer) yield nothing on day one and
+    exit immediately, so this is safe to run for every critical source.
+    """
+    domain = _registrable_domain(source.get("url", ""))
+    if not domain or not (start_date and end_date):
+        return []
+    start = start_date.date() if hasattr(start_date, "date") else start_date
+    end = end_date.date() if hasattr(end_date, "date") else end_date
+    seen: dict[str, str] = {}
+    day = start
+    while day <= end:
+        ymd = f"{day.year:04d}/{day.month:02d}/{day.day:02d}"
+        link_re = _re.compile(
+            r'<a[^>]+href="(https?://(?:www\.)?%s/%s/[^"/?#]+/?)"[^>]*>(.*?)</a>'
+            % (_re.escape(domain), ymd), _re.S)
+        for page in range(1, 4):
+            url = f"https://{domain}/{ymd}/" if page == 1 else f"https://{domain}/{ymd}/page/{page}/"
+            try:
+                res = await fetcher.fetch(url)
+            except Exception:
+                break
+            new = 0
+            for m in link_re.finditer(res.html):
+                u = m.group(1)
+                title = _html.unescape(_re.sub(r"<[^>]+>", "", m.group(2))).strip()
+                if len(title) >= 15 and u not in seen:
+                    seen[u] = title
+                    new += 1
+            if new == 0:
+                break
+        # Day one produced nothing for this whole domain → not a date-permalink
+        # site; don't waste fetches on the remaining days.
+        if day == start and not seen:
+            return []
+        day += timedelta(days=1)
+    articles: list[Article] = []
+    for u, title in seen.items():
+        m = _re.search(r"/(\d{4})/(\d{2})/(\d{2})/", u)
+        published = datetime(int(m.group(1)), int(m.group(2)), int(m.group(3))) if m else None
+        articles.append(Article(
+            source_id=source["id"], source_name=source["name"],
+            language=source.get("language", "ar"), country_focus=source.get("country_focus", "Libya"),
+            title=title, url=u, published_at=published, matched_keywords=[]))
+    return articles
 
 
 async def _collect_articles(
@@ -185,6 +242,18 @@ async def scrape_source(
                         "Backfilled %s via site: (%s -> %s raw)", source_id, len(raw_articles), len(merged)
                     )
                     method = f"{method}+site:"
+                raw_articles = merged
+        # Critical sources: also crawl per-day /YYYY/MM/DD/ archives so shallow
+        # listings / hidden dates don't drop a busy day (no-op for non-date sites).
+        if source_id in CRITICAL_SOURCE_IDS:
+            archive = await _date_archive_backfill(source, fetcher, start_date, end_date)
+            if archive:
+                merged = deduplicate_articles(raw_articles + archive)
+                if len(merged) > len(raw_articles):
+                    logger.info(
+                        "Backfilled %s via date-archive (%s -> %s raw)", source_id, len(raw_articles), len(merged)
+                    )
+                    method = f"{method}+archive"
                 raw_articles = merged
         articles = [
             article
