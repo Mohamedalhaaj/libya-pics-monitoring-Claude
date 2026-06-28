@@ -112,7 +112,7 @@ async def _date_archive_backfill(
         link_re = _re.compile(
             r'<a[^>]+href="(https?://(?:www\.)?%s/%s/[^"/?#]+/?)"[^>]*>(.*?)</a>'
             % (_re.escape(domain), ymd), _re.S)
-        for page in range(1, 4):
+        for page in range(1, 6):
             url = f"https://{domain}/{ymd}/" if page == 1 else f"https://{domain}/{ymd}/page/{page}/"
             try:
                 res = await fetcher.fetch(url)
