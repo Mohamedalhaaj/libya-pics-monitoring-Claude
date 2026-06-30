@@ -152,13 +152,14 @@
     },
     {
       "id": "al_saaa_24",
-      "name": "Al Saaa 24",
+      "name": "Alsaaa 24",
       "language": "ar",
       "country_focus": "Libya",
-      "url": "https://alsaaa24.net/category/%D9%84%D9%8A%D8%A8%D9%8A%D8%A7",
+      "url": "https://www.alsaaa24.com/category/%D9%84%D9%8A%D8%A8%D9%8A%D8%A7/",
       "parser": "generic_list",
       "enabled": true,
       "require_keyword_match": false,
+      "feed": "https://www.alsaaa24.com/feed/",
       "selectors": {
         "article": "a.bg-white.rounded, article, .post",
         "title": "h3, h2, .entry-title a, a",

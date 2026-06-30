@@ -60,6 +60,11 @@ class ReportHeadline:
 
     text: str
     sources: list[HeadlineSource] = field(default_factory=list)
+    # Optional italic summary paragraph rendered under the headline — used by
+    # Varieties Analysis/Opinion/Feature items (the article's first paragraph).
+    summary: str = ""
+    # Optional Varieties tag: "Analysis" | "Opinion" | "Feature" | "Report".
+    tag: str = ""
 
     def render_sources(self) -> str:
         return " / ".join(source.render() for source in self.sources)

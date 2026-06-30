@@ -15,12 +15,15 @@ report is meant to be exhaustive.
 
 - **One bullet per distinct event — and keep ALL of them.** Do **not** omit a real
   story because it looks "minor", "routine", or low-news-value (a single ministry
-  meeting, a local council statement, a municipal project, a sports result, a court
-  case, an op-ed). If it's a distinct in-window Libya item with a usable source, it
-  gets a bullet.
-- **The only things you exclude** are genuine non-stories: exact duplicates,
-  homepages/tag/category pages, broken/unverifiable links, non-Libya items, and raw
-  social posts. "Low news value" is **not** an exclusion reason here.
+  meeting, a local council statement, a municipal project, a court case). If it's a
+  distinct in-window Libya item with a usable source, it gets a bullet.
+- **Editor's exclusions (controlling — override completeness):** NO sport/football
+  (previews, results, leagues, federations); NO routine weather forecasts; NO
+  obscure-commentator/pundit opinion takes (esp. Alsaaa 24's). See the full
+  Editor's-corrections list in `docs/codex_enrichment_brief.md`.
+- **The only other things you exclude** are genuine non-stories: exact duplicates,
+  homepages/tag/category pages, broken/unverifiable links, non-Libya items, raw
+  social posts, and **anything already run in the previous day's report**.
 - **This is not licence to un-merge.** Same-event coverage from many outlets is still
   **one** bullet citing all of them (brief rule 3). Completeness means *more distinct
   stories*, never the same story repeated per outlet.
@@ -84,7 +87,7 @@ Save as `Libya_News_Headlines_<dates>_PICS.docx` in the repo root.
 You are an LLM that can read Arabic and English and open links. The automated
 `evaluate.py` (next section) catches the cheap, mechanical errors — but two things
 only *you* can verify by actually reading the articles: whether each link matches
-its bullet, and whether the same story was written twice. Run these four passes on
+its bullet, and whether the same story was written twice. Run these seven passes on
 your draft and fix everything they surface. **Read the article (the CSV title/summary,
 or open the URL in the browser when unsure) — do not guess.**
 
@@ -135,9 +138,15 @@ Full detail + real examples in [`docs/codex_qa_lessons.md`](docs/codex_qa_lesson
 > second org, an extra country, or a vaguer group than the links support.
 - **Drop junk sources** even when the fact is true: content aggregators
   (MSN/Yahoo/Bing/ground.news), auto-translation portals (`*.vn`, machine-translated
-  mirrors), and off-topic local papers running a wire (mlive.com, daily-sun.com —
-  red flag: the headline doesn't mention Libya). Cite the wire (AP/Reuters/AFP/ANSA)
-  or a Libyan/regional outlet instead.
+  mirrors), SEO/clickbait travel sites (Travel And Tour World, eTurboNews), and
+  off-topic local papers running a wire (mlive.com, daily-sun.com — red flag: the
+  headline doesn't mention Libya). Cite the wire (AP/Reuters/AFP/ANSA) or a
+  Libyan/regional outlet instead.
+  **Calibration (don't over-strip):** the human KEEPS minor-but-real outlets and
+  aggregators (e.g. Breakingthenews.net, Mirage News, Demócrata, small trade sites)
+  — **especially as one of several outlets in a merged bullet.** Only cut true
+  spam / auto-translation / not-about-Libya. Never leave a story sourced ONLY to junk
+  when a better source exists, but you need not purge every secondary outlet.
 - **Displayed outlet == the linked URL's outlet**; if the sentence names an outlet
   or author, it must be the linked one (e.g. don't write "OilPrice.com argued" then
   link Anas Alhajji's Substack, or "Sada reports" then link New Arab).
@@ -160,10 +169,41 @@ Full detail + real examples in [`docs/codex_qa_lessons.md`](docs/codex_qa_lesson
   Politics/Economy/Environment; add a short neutral summary. Plain news carries no
   Analysis/Report prefix.
 
+**Pass 6 — Format conformance (match the gold exactly).** Check against
+[`docs/PICS_REPORT_FORMAT_SPEC.md`](docs/PICS_REPORT_FORMAT_SPEC.md) and
+[`docs/PICS_NAMES_AND_TITLES.md`](docs/PICS_NAMES_AND_TITLES.md):
+- **No terminal period** on any headline (gold = 0%). Strip every trailing `.`
+  before the ` – `.
+- **8 sections only**, canonical order, Impact-14pt headers, no "Social Media"
+  section (out of scope). Centred bold title `Libya News Headlines – D[-D] Month`.
+- **Canonical names/roles** from the glossary — Menfi (not Al-Manfi), Baour (not
+  Al-Baour), Agila Saleh (not Aguila/Ageela), Dbeibah, Mlegta; no doubled
+  `[Role] Surname: surname…` leads; never a name translated to a common noun.
+- **Varieties** Analysis/Opinion/Feature = bold `Tag | headline – Source` + a
+  2–4-sentence italic summary paragraph.
+- ` (Arabic)` on Arabic outlets only; English outlets untagged; each source a
+  hyperlink to its specific article; no outlet repeated within a bullet.
+
+**Pass 7 — Editorial exclusions & routing (the editor's controlling list).** Check
+against `docs/codex_enrichment_brief.md` "Editor's corrections":
+- **No sport/football**, **no routine weather forecasts**, **no obscure-commentator
+  opinion** items — remove them.
+- **United Nations section** = UN bodies/agencies (UNSMIL, SRSG/DSRSG, **UNDP, UNHCR,
+  UNICEF, IOM, WHO, World Bank**) doing/saying something; a figure *commenting on* the
+  UN or the US initiative belongs in **Politics**.
+- **Tight categorisation** — each story in ONE best-fit section (use the section
+  definitions); Boulos/Rubio/initiative items cluster in Politics, not scattered.
+- **No previous-day repeats** — drop any story already carried in yesterday's report.
+- **`[Role] Surname:`** colon only for a real quote; no repeated surname.
+- **Varieties** tagged items only when genuinely Analysis/Opinion/Feature, with the
+  article's real headline + its first paragraph as the italic summary.
+- After authoring, run `python scripts/clean_report_docx.py REPORT.docx` to strip any
+  stray terminal periods and normalise spellings.
+
 **Use the browser** whenever you are unsure two articles are the same event, or
 whether a headline matches its link: open the URLs and read them.
 
-Only once all four passes are clean, run the automated check below.
+Only once all passes are clean, run the automated check below.
 
 ---
 

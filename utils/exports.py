@@ -194,10 +194,22 @@ def _add_hyperlink(paragraph, url: str, text: str) -> None:
     paragraph._p.append(hyperlink)
 
 
+def _strip_terminal_period(text: str) -> str:
+    """Gold headlines never end with a full stop (PICS house style). Strip a
+    single trailing '.' (and surrounding space) so the editor doesn't have to."""
+    return re.sub(r"\s*\.\s*$", "", text.rstrip())
+
+
 def _render_headline(document: Document, headline: ReportHeadline) -> None:
     # "List Bullet" gives the bulleted layout the PICS house style uses.
     paragraph = document.add_paragraph(style="List Bullet")
-    paragraph.add_run(headline.text)
+    head_text = _strip_terminal_period(headline.text)
+    # Varieties tagged items lead with a bold "Analysis | ..." run.
+    if headline.tag:
+        lead = paragraph.add_run(f"{headline.tag} | {head_text}")
+        lead.bold = True
+    else:
+        paragraph.add_run(head_text)
     if headline.sources:
         paragraph.add_run(" – ")
         for index, source in enumerate(headline.sources):
@@ -208,12 +220,19 @@ def _render_headline(document: Document, headline: ReportHeadline) -> None:
                 _add_hyperlink(paragraph, source.url, label)
             else:
                 paragraph.add_run(label)
+    # Optional italic summary paragraph (Varieties first paragraph).
+    if headline.summary:
+        summary_para = document.add_paragraph()
+        summary_run = summary_para.add_run(headline.summary)
+        summary_run.italic = True
+        summary_run.font.size = Pt(11)
 
 
 def _add_section_heading(document: Document, text: str) -> None:
+    # Gold house style: section headers are Impact 14pt (not bold Calibri).
     paragraph = document.add_paragraph()
     run = paragraph.add_run(text)
-    run.bold = True
+    run.font.name = "Impact"
     run.font.size = Pt(14)
 
 
@@ -262,24 +281,25 @@ def write_word_report(
             for headline in subsection.headlines:
                 _render_headline(document, headline)
 
-    # Source verification appendix (operational record, kept out of the body).
-    document.add_page_break()
-    appendix = document.add_paragraph()
-    appendix_run = appendix.add_run("Source Verification")
-    appendix_run.bold = True
-    appendix_run.font.size = Pt(14)
+    if verifications:
+        # Source verification appendix (operational record, kept out of the body).
+        document.add_page_break()
+        appendix = document.add_paragraph()
+        appendix_run = appendix.add_run("Source Verification")
+        appendix_run.bold = True
+        appendix_run.font.size = Pt(14)
 
-    table = document.add_table(rows=1, cols=5)
-    table.style = "Table Grid"
-    for index, header in enumerate(["Source", "URL", "Status", "Articles", "Error"]):
-        table.rows[0].cells[index].text = header
-    for verification in verifications:
-        cells = table.add_row().cells
-        cells[0].text = verification.source_name
-        cells[1].text = verification.url or ""
-        cells[2].text = verification.status
-        cells[3].text = str(verification.articles_found)
-        cells[4].text = verification.error or ""
+        table = document.add_table(rows=1, cols=5)
+        table.style = "Table Grid"
+        for index, header in enumerate(["Source", "URL", "Status", "Articles", "Error"]):
+            table.rows[0].cells[index].text = header
+        for verification in verifications:
+            cells = table.add_row().cells
+            cells[0].text = verification.source_name
+            cells[1].text = verification.url or ""
+            cells[2].text = verification.status
+            cells[3].text = str(verification.articles_found)
+            cells[4].text = verification.error or ""
 
     disclaimer = document.add_paragraph()
     disclaimer_run = disclaimer.add_run(taxonomy.DISCLAIMER)

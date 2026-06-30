@@ -6,12 +6,73 @@ pipeline normally hands to the Claude API (`utils/enrich.py`); the brief lets
 another model do the same job. Reference the gold human reports in `samples/*.docx`
 for tone and layout.
 
-> **Also read before/while writing:** [`codex_qa_lessons.md`](codex_qa_lessons.md)
-> — link-fidelity, source-credibility and attribution rules distilled from QA
-> review (no junk/aggregator sources, displayed outlet = linked URL, every named
-> entity needs a supporting link, don't under-source the flagship story). These
-> are the reading-only checks `evaluate.py` can't catch; enforce them in the
-> `CODEX.md` self-audit (Pass 5). Authority: `PICS_Master_SOP_Codex_Operational_Edition.docx`.
+> **Also read before/while writing:**
+> - [`PICS_REPORT_FORMAT_SPEC.md`](PICS_REPORT_FORMAT_SPEC.md) — the EXACT format
+>   from the 20 gold samples (no-period headlines, Impact-14pt section headers,
+>   Varieties `Analysis|`+italic-summary, fonts, selectivity/source calibration).
+> - [`PICS_NAMES_AND_TITLES.md`](PICS_NAMES_AND_TITLES.md) — canonical name spellings
+>   + role-tag glossary (Menfi, Baour, Agila Saleh, Dbeibah, Mlegta…). Use these.
+> - [`codex_qa_lessons.md`](codex_qa_lessons.md) — link-fidelity, source-credibility
+>   and attribution rules from QA review (displayed outlet = linked URL, every named
+>   entity needs a supporting link, don't under-source the flagship story; **drop only
+>   SEO-spam / auto-translation / non-Libya sources — minor real aggregators are OK,
+>   esp. as one of several in a merged bullet**). These are the reading-only checks
+>   `evaluate.py` can't catch; enforce them in the `CODEX.md` self-audit (Pass 5–6).
+>   Authority: `PICS_Master_SOP_Codex_Operational_Edition.docx`.
+
+## Editor's corrections — CONTROLLING (from the PICS editor, applies every time)
+
+Direct feedback from the human editor on real output. These override anything below.
+
+1. **No `.` at the end of any headline.** (Also auto-stripped by
+   `scripts/clean_report_docx.py`, but write them without it.)
+2. **Categorise tightly; one story lives in ONE section.** Recurring failures: Boulos
+   and Rubio scattered across many sections; Politics polluted with human-rights,
+   economy, international, varieties and Syria items; Koni's PC denial filed under
+   Health. Use the **section definitions** below; put a running story in a single
+   named cluster in its best-fit section, never repeated across sections.
+3. **Remove ALL football and sport** — no match previews, results, leagues,
+   championships, federations. (Overrides the completeness mandate for sport.)
+4. **Drop low-value individual commentators / pundits.** Obscure online
+   commentators' opinion takes (Alsaaa 24 runs many of these) are not stories — cut
+   them. Keep substantive analysis by named experts / institutions only.
+5. **`[Role] Surname:` (colon) is for an actual QUOTE/statement only.** If the bullet
+   describes an action, use no colon: `[PM] Dbeibah directs …` not `[PM] Dbeibah:
+   Dbeibah directs …`. Never repeat the surname after the tag.
+6. **Window discipline + no day-to-day repeats.** Include ONLY stories dated inside
+   the coverage window — no March / early-June leftovers. AND do not reproduce a
+   story that already ran in the **previous day's report**; check it and skip repeats
+   (carry a story forward only for a genuinely new development).
+7. **Use our spellings** — `PICS_NAMES_AND_TITLES.md` (Menfi, Baour, Agila Saleh,
+   Dbeibah, Mlegta, Sebha, Kufrah…). `clean_report_docx.py` normalises the common ones.
+8. **Varieties: pull the article's FIRST PARAGRAPH** as the italic summary under each
+   Analysis/Opinion/Feature item.
+9. **Don't over-tag Varieties.** Only label a piece `Analysis |`/`Opinion |`/`Feature |`
+   when it really is one; the text after the tag must be the **article's real
+   headline**, not your own analysis. Plain news gets no tag and is not "analysis".
+10. **United Nations section = the UN (UNSMIL, SRSG/DSRSG **and UN agencies: UNDP,
+    UNHCR, UNICEF, IOM, WHO, World Bank…**) DOING/ saying something.** Recognise the
+    agencies (they were pulled but miscategorised). A Libyan/other figure *commenting
+    on* the UN or the US initiative is **Politics**, not United Nations.
+11. **Remove routine weather** — daily forecasts ("today will be …", temperatures,
+    humidity). Environment keeps only substantive items (floods, power-grid sabotage,
+    water/agriculture policy, environmental damage), not the daily bulletin.
+
+### Section definitions (use for routing — point 2)
+- **United Nations** — actions/statements BY UN bodies & agencies (see point 10).
+- **Politics** — institutions & governance, the US/Boulos & UN-initiative diplomacy
+  and Libyan reactions to it, elections/constitution, government & municipal affairs,
+  the intelligence-leadership dispute. (Rubio/Boulos/initiative items cluster here.)
+- **Military & Security** — army/LNA, 5+5, security ops, crime, weapons, borders.
+- **Human Rights & Rule of Law** — migration, prosecutions/detentions, judiciary,
+  health, education, vulnerable groups, civil liberties.
+- **Economy** — banking/CBL, oil & energy (NOC/Eni/Brega), markets, reconstruction
+  & infrastructure, electricity.
+- **Environment** — weather EVENTS, climate, agriculture, water (not daily forecasts).
+- **Regional & International** — foreign relations, bilateral visits (India,
+  Mauritania…), maritime/EEZ, regional security.
+- **Varieties** — culture, heritage, society; tagged Analysis/Opinion/Feature pieces
+  (with first-paragraph summary). NO sport.
 
 ## Input
 
@@ -38,8 +99,11 @@ to a `D-D Month` range; a single day is just `D Month`).
    summarise accurately in English.
 2. **Translate.** Render every Arabic headline as one clear, concise English
    sentence stating the news fact. Never start a bullet with the outlet name. No
-   opinion or editorialising. Preserve proper nouns / transliterations of Libyan
-   names (Tetteh, Boulos, Haftar, Dbeibeh, Menfi, Takala, Saleh…).
+   opinion or editorialising. Use the **canonical name spellings** in
+   [`PICS_NAMES_AND_TITLES.md`](PICS_NAMES_AND_TITLES.md) — **Menfi** (not Al-Manfi),
+   **Baour** (not Al-Baour), **Al Koni**, **Agila Saleh** (not Aguila/Ageela),
+   **Dbeibah**, Tetteh, Koury, Takala, Haftar, Boulos, Mlegta. Never translate a
+   person's name into a common noun (real failures: النعاس→"Sleepiness", هدية→"Gift").
 3. **Deduplicate by EVENT, not by topic.** Merge several outlets into ONE bullet
    **only when they report the same specific event** (the same announcement,
    meeting, incident, or statement). Sources sharing a mere topic are NOT the
@@ -79,9 +143,15 @@ to a `D-D Month` range; a single day is just `D Month`).
      — NOT `Al-Jehani: Support from the General Command…`
    - `[SRSG] Tetteh warns the Security Council that disinformation threatens stability`
    - `[Mufti] Gharyani issues a fatwa calling on Libyans to reject the outcomes`
-   The gold report brackets a role on ~15% of bullets; match that. Infer the role
-   from the source text (HoR Member, HCS Member, Mufti, SRSG, Minister, analyst…).
-7. **One sentence per bullet.** Factual, present tense where natural.
+   The gold report brackets a role on ~15% of bullets; match that. Use the
+   **canonical tag** from [`PICS_NAMES_AND_TITLES.md`](PICS_NAMES_AND_TITLES.md)
+   (`[HoR Member]`, `[PC President]`, `[Acting FM]`, `[HCS Member]`, `[SD Member]`,
+   `[SRSG]`/`[DSRSG]`, `[PM]`, `[CoS]`, `[Mufti]`…). Don't repeat the surname after
+   the tag (✗ `[PM] Dbeibah: dbeibah announces…`).
+7. **One sentence per bullet, NO terminal period.** Factual, present tense where
+   natural. A headline is a headline, not a sentence — the gold ends bullets with
+   **no full stop** (0% across the corpus); `…in Libya – Reuters`, never
+   `…in Libya. – Reuters`. (Our past drafts wrongly ended 96–98% with `.`.)
 8. **No duplicate or filler bullets — but cover EVERY distinct story.** Every
    bullet is a distinct story appearing exactly once (zero duplicates). Do NOT emit
    vague placeholders ("A Libya-related report covered domestic developments");
@@ -89,11 +159,19 @@ to a `D-D Month` range; a single day is just `D Month`).
    *repeats and filler*, **not** a real but minor story. **Completeness mandate
    (standing user instruction, overrides the SOP's low-value-exclusion):** include
    **every distinct in-window Libya story in the data** — a single ministry meeting,
-   a local council statement, a municipal project, a court case, a sports result, an
-   op-ed all get a bullet. The report must be exhaustive, only de-duplicated; a draft
+   a local council statement, a municipal project, a court case all get a bullet.
+   **EXCEPT the editor's exclusions (controlling): NO sport/football, NO routine
+   weather forecasts, NO obscure-commentator opinion pieces** (see Editor's
+   corrections 3, 4, 11). The report must be exhaustive, only de-duplicated; a draft
    far below the number of distinct stories in the data has dropped real coverage.
    Exclude only non-stories: exact duplicates, homepages/tag pages, broken links,
    non-Libya items, raw social posts.
+   **Calibration (vs the human's 30 June report): completeness = MERGE HARDER, not
+   more bullets.** The human covered the same window in **~140 bullets** where our
+   Codex draft had **~220** — the gap was under-merging, not extra coverage. One
+   event = ONE bullet citing 6–30 outlets (e.g. a leak story cites 6, an oil project
+   30). Land near the distinct-story count by merging every same-event restatement
+   across the whole report, NOT by emitting the same story 3× across sections.
 9. **Fidelity — each bullet must match the article(s) it cites.** Write what the
    cited article actually reports; the headline and its link must be about the
    SAME story. Never write a generic umbrella sentence over several stories
@@ -144,16 +222,28 @@ Suggested subsections (use what fits; add an "Other …" bucket as needed):
 - **Economy:** Banking and currency; Energy and fuel; Markets, labour and services; Infrastructure and reconstruction; Other economic news
 - **Environment:** Weather, climate and agriculture; Water and environmental resources; Other
 - **Regional & International:** Diplomacy and foreign relations; Regional security; Gaza/convoy-related Libya news; Other
-- **Varieties:** Culture, heritage and society; Sports; Analysis/Opinion; Other
+- **Varieties:** Culture, heritage and society; Sports; Other. **Analysis/Opinion
+  pieces use a special format:** a **bold** `Analysis | {headline} – {Source}` (tags:
+  `Analysis |`, `Opinion |`, `Feature |`, `Report |`) **followed by a 2–4-sentence
+  italic summary paragraph** of the piece. (See FORMAT_SPEC §4.)
+
+Subsection headers are a mix of (a) standard thematic ones above and (b) **named
+event clusters** for a running story — make them descriptive, e.g. `SRSG Tetteh and
+DSRSG Koury meeting with Acting FM Baour`, `Dispute over the Presidential Council's
+selection of the Head of General Intelligence Service`, `Indian Delegation visits Libya`.
 
 ## Output
 
-A Word-style document:
+A Word-style document (formatting per `PICS_REPORT_FORMAT_SPEC.md`):
 
-- Centred bold title `Libya News Headlines – 18-21 June`.
-- Bold section headings (the 8 above), bold sub-headings, bulleted headlines
-  with linked source names.
-- End with the mandatory disclaimer:
+- **Centred bold title** `Libya News Headlines – 18-21 June` (en-dash, `D Month` or
+  `D-D Month`, no year, no leading zero).
+- **Section headers in Impact 14pt** (the 8 sections — NO "Social Media" section,
+  out of scope); **bold Calibri sub-headers**; **body Calibri 12pt**.
+- Bulleted headlines with **NO terminal period**; **each source name is a hyperlink**
+  to its specific article; ` (Arabic)` on Arabic outlets only.
+- Varieties Analysis/Opinion/Feature items get the bold `Tag | …` line + italic summary.
+- End with the mandatory disclaimer (italic):
 
 > DISCLAIMER: The Media Monitoring Reviews are compiled by the Public Information
 > & Communications Section (PICS) of UNSMIL. These Reports do not reflect the
