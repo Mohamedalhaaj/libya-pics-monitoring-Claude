@@ -8,6 +8,14 @@ the report writes `[Role] Surname: …` (statement) or `[Role] Surname …` (act
 > Rule: transliterate a person/place to the form below; if a new name appears,
 > add it here. Do **not** invent first names or co-actors not in the source
 > (faithfulness rule). Surname-only is fine — that is what the gold uses.
+>
+> **Bracket EVERY named person.** Whenever a bullet names a specific individual,
+> put their `[Role]` in brackets before the surname — the human editor does this on
+> essentially every named-person bullet (institutional actors like "The Public
+> Prosecution", "UNSMIL", "NOC" get no bracket). Bracket at least the **lead** actor;
+> in an "X and Y" bullet the gold usually brackets only the lead (e.g. `[CoS] Namroush
+> and Khaled Haftar…`). If a name's title isn't in this file, read the source article
+> to get it (don't guess) — then add it here.
 
 ---
 
@@ -29,7 +37,7 @@ the report writes `[Role] Surname: …` (statement) or `[Role] Surname …` (act
 | Surname | Role tag | Note |
 |---|---|---|
 | **Menfi** | `[PC President]` | Mohamed al-Menfi — **NOT** Al-Manfi/Al-Menfi |
-| **Al Koni** | `[PC Deputy]` / `[PC Member]` | Musa al-Koni — "Al Koni" or "Koni" |
+| **Koni** | `[PC Deputy]` | Musa al-Koni — prefer **Koni** (drop "Al-"), matching Menfi/Baour |
 | **Al-Lafi** (Lafi) | `[PC Member]` | Abdullah al-Lafi |
 
 ### House of Representatives (HoR)
@@ -58,8 +66,8 @@ the report writes `[Role] Surname: …` (statement) or `[Role] Surname …` (act
 | **Dbeibah** | `[PM]` | Abdulhamid al-Dbeibah (also spelled Dbeibeh — prefer **Dbeibah**) |
 | Zadma (Zadmeh) | `[Deputy PM]` / `[PM Deputy]` | |
 | Ben Ghalbon | `[Minister of State for Cabinet Affairs]` | |
-| Trabelsi | `[MoI]` | Acting Interior Minister (use `[MoI]`, not `[MOI]`) |
-| Hawaij (Al-Hwaij) | `[Minister of Economy]` | |
+| Trabelsi | `[Acting MoI]` | Imad Trabelsi, Acting Interior Minister (`[Acting MoI]` or `[MoI]`, not `[MOI]`) |
+| **Hwaij** — DISAMBIGUATE by context | `[HoR-appointed FM]` **or** `[Minister of Economy]` | Foreign/consular/embassy item → **`[HoR-appointed FM]`** (eastern-gov Foreign Minister — al-Hwaij). Economy/trade/free-zones/investment item → `[Minister of Economy]` (GNU). Real fix: a Morocco-consular bullet was wrongly tagged `[Minister of Economy]`; it must be `[HoR-appointed FM]`. |
 | Arhouma | `[Minister of Labour]` | |
 | Kilani | `[Minister of Social Affairs]` | |
 | Shehoubi (Shahoubi) | `[Transport Minister]` | |
@@ -97,9 +105,28 @@ the report writes `[Role] Surname: …` (statement) or `[Role] Surname …` (act
 | Gharyani (Al-Ghariani / Sadiq) | `[Grand Mufti]` / `[Mufti]` | Sadiq al-Ghariani |
 
 ### Foreign heads of state / officials
-`[Egyptian President]` (Sisi), `[President of Ghana]` (Mahama). For other foreign
-officials, write the descriptive role (e.g. "Egypt's defense minister", "British
-Ambassador", "Indian Ambassador") — bracket only when it leads the bullet.
+`[Egyptian President]` (Sisi), `[President of Ghana]` (Mahama), `[US Secretary of
+State]` (Rubio), `[US Advisor]` (Boulos). Other foreign officials: descriptive role
+("Egypt's defense minister", "British Ambassador", "Indian Ambassador") — bracket
+only when it leads the bullet. Named private figures: `[Egyptian Businessman]`
+(Naguib Sawiris).
+
+### Verified this cycle (30 Jun–1 Jul) — merge into the tables above
+| Surname | Role tag | Note |
+|---|---|---|
+| Mlegta | `[Head of General Intelligence]` | Abdelmajid Mlegta, newly appointed head of the General Intelligence Service |
+| Shakshak | `[Audit Bureau Head]` | head of the State Audit Bureau |
+| Al-Sagheer (Sagheer) | `[HoR Member]` | MP Al-Hadi al-Sagheer (source: النائب) |
+| Kilani | `[Social Affairs Minister]` | |
+| Aqouri (Al-Aqouri) | `[HoR Foreign Affairs Committee Chairman]` | Youssef al-Aqouri |
+| Issa | `[CBL Governor]` | Naji Issa (already above) |
+| Ghaith | `[CBL Board Member]` | human sometimes writes "Former member of the CBL Board" |
+
+**Drop, don't bracket:** opinion/statement bullets led by a **non-notable political
+activist or analyst** — the editor cuts these (e.g. `[Activist]` Shaaban on the
+intelligence file, `[Analyst]` Shallouf on migrant numbers were both removed).
+`[Analyst]`/`[Activist]` is only for a substantive expert whose analysis is kept
+(and then it goes in Varieties, not the news sections).
 
 ---
 

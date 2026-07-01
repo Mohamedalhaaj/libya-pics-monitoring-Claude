@@ -33,18 +33,27 @@ Direct feedback from the human editor on real output. These override anything be
    named cluster in its best-fit section, never repeated across sections.
 3. **Remove ALL football and sport** — no match previews, results, leagues,
    championships, federations. (Overrides the completeness mandate for sport.)
-4. **Drop low-value individual commentators / pundits.** Obscure online
-   commentators' opinion takes (Alsaaa 24 runs many of these) are not stories — cut
-   them. Keep substantive analysis by named experts / institutions only.
+4. **Drop low-value individual commentators / pundits / activists.** Obscure online
+   commentators', analysts' and activists' opinion takes (Alsaaa 24 runs many) are not
+   stories — cut them. The editor removed `[Activist]` Shaaban and `[Analyst]` Shallouf
+   entirely. `[Analyst]`/`[Activist]` is only for a substantive expert whose piece is
+   worth keeping (and then it belongs in Varieties, not the news sections).
 5. **`[Role] Surname:` (colon) is for an actual QUOTE/statement only.** If the bullet
    describes an action, use no colon: `[PM] Dbeibah directs …` not `[PM] Dbeibah:
-   Dbeibah directs …`. Never repeat the surname after the tag.
-6. **Window discipline + no day-to-day repeats.** Include ONLY stories dated inside
-   the coverage window — no March / early-June leftovers. AND do not reproduce a
-   story that already ran in the **previous day's report**; check it and skip repeats
-   (carry a story forward only for a genuinely new development).
-7. **Use our spellings** — `PICS_NAMES_AND_TITLES.md` (Menfi, Baour, Agila Saleh,
-   Dbeibah, Mlegta, Sebha, Kufrah…). `clean_report_docx.py` normalises the common ones.
+   Dbeibah directs …`. Never repeat the surname after the tag. **Bracket EVERY named
+   person** with their `[Role]` (at least the lead actor of the bullet); institutional
+   actors ("The Public Prosecution", "UNSMIL", "NOC") get no bracket. Get the title
+   from `PICS_NAMES_AND_TITLES.md`, or read the source if it's not listed.
+6. **Window discipline + no day-to-day repeats — but KEEP flagship ongoing stories.**
+   Include ONLY stories dated inside the window (no March / early-June leftovers). Skip
+   ROUTINE/minor items that already ran in the previous day's report. **Do NOT drop the
+   day's flagship stories** (e.g. the Rubio–Haftar Washington meeting, the Eni-Sabratha
+   gas start-up) just because they appeared the day before — the editor keeps major
+   ongoing stories. Cross-day dedup targets small repeats, not the lead news.
+7. **Use our spellings** — `PICS_NAMES_AND_TITLES.md` (Menfi, Baour, Koni, Abani,
+   Agila Saleh, Dbeibah, Mlegta, Sebha, Kufrah…). Note **Hwaij = `[HoR-appointed FM]`**
+   for foreign/consular items (only `[Minister of Economy]` for GNU economy/trade items).
+   `clean_report_docx.py` normalises the common spellings.
 8. **Varieties: pull the article's FIRST PARAGRAPH** as the italic summary under each
    Analysis/Opinion/Feature item.
 9. **Don't over-tag Varieties.** Only label a piece `Analysis |`/`Opinion |`/`Feature |`

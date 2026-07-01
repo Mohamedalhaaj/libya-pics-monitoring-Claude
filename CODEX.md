@@ -186,14 +186,20 @@ Full detail + real examples in [`docs/codex_qa_lessons.md`](docs/codex_qa_lesson
 
 **Pass 7 — Editorial exclusions & routing (the editor's controlling list).** Check
 against `docs/codex_enrichment_brief.md` "Editor's corrections":
-- **No sport/football**, **no routine weather forecasts**, **no obscure-commentator
-  opinion** items — remove them.
+- **No sport/football**, **no routine weather forecasts** — remove them.
+- **Drop non-notable commentator/analyst/activist opinion** bullets (Alsaaa 24 runs
+  many). `[Activist]`/`[Analyst]` is only for a substantive expert kept in Varieties.
 - **United Nations section** = UN bodies/agencies (UNSMIL, SRSG/DSRSG, **UNDP, UNHCR,
   UNICEF, IOM, WHO, World Bank**) doing/saying something; a figure *commenting on* the
   UN or the US initiative belongs in **Politics**.
 - **Tight categorisation** — each story in ONE best-fit section (use the section
   definitions); Boulos/Rubio/initiative items cluster in Politics, not scattered.
-- **No previous-day repeats** — drop any story already carried in yesterday's report.
+- **Bracket EVERY named person** with their `[Role]` (lead actor at minimum); get the
+  title from `docs/PICS_NAMES_AND_TITLES.md` or read the source. Note **Hwaij =
+  `[HoR-appointed FM]`** for foreign/consular items, not `[Minister of Economy]`.
+- **Cross-day repeats:** skip ROUTINE items already in yesterday's report, but KEEP
+  the day's flagship ongoing stories (e.g. Rubio–Haftar meeting, Eni-Sabratha start-up)
+  — the editor keeps those even across days.
 - **`[Role] Surname:`** colon only for a real quote; no repeated surname.
 - **Varieties** tagged items only when genuinely Analysis/Opinion/Feature, with the
   article's real headline + its first paragraph as the italic summary.
