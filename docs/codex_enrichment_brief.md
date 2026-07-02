@@ -44,12 +44,13 @@ Direct feedback from the human editor on real output. These override anything be
    person** with their `[Role]` (at least the lead actor of the bullet); institutional
    actors ("The Public Prosecution", "UNSMIL", "NOC") get no bracket. Get the title
    from `PICS_NAMES_AND_TITLES.md`, or read the source if it's not listed.
-6. **Window discipline + no day-to-day repeats — but KEEP flagship ongoing stories.**
-   Include ONLY stories dated inside the window (no March / early-June leftovers). Skip
-   ROUTINE/minor items that already ran in the previous day's report. **Do NOT drop the
-   day's flagship stories** (e.g. the Rubio–Haftar Washington meeting, the Eni-Sabratha
-   gas start-up) just because they appeared the day before — the editor keeps major
-   ongoing stories. Cross-day dedup targets small repeats, not the lead news.
+6. **Window discipline; cross-day repeats are TOLERATED unless low-value.**
+   Include ONLY stories dated inside the window (no March / early-June leftovers).
+   **Calibration from the editor's own 2 July edit:** an in-window story that also ran
+   in the previous report is generally KEPT (they re-carried CT Week, OLA-Ethiopia,
+   Nigeria crude, Eni-Sabratha, air pollution, Pegasus). Drop a repeat only when it is
+   BOTH already-carried AND minor/routine (they cut the AG pesticide-list order and the
+   Egyptian-Turkish intel item). Never drop a flagship for being carried yesterday.
 7. **Use our spellings** — `PICS_NAMES_AND_TITLES.md` (Menfi, Baour, Koni, Abani,
    Agila Saleh, Dbeibah, Mlegta, Sebha, Kufrah…). Note **Hwaij = `[HoR-appointed FM]`**
    for foreign/consular items (only `[Minister of Economy]` for GNU economy/trade items).
@@ -68,7 +69,9 @@ Direct feedback from the human editor on real output. These override anything be
     water/agriculture policy, environmental damage), not the daily bulletin.
 
 ### Section definitions (use for routing — point 2)
-- **United Nations** — actions/statements BY UN bodies & agencies (see point 10).
+- **United Nations** — actions/statements BY UN bodies & agencies (see point 10);
+  ALSO formal correspondence WITH the UN (e.g. Koni informing UNSMIL of his objection
+  — the editor files that here).
 - **Politics** — institutions & governance, the US/Boulos & UN-initiative diplomacy
   and Libyan reactions to it, elections/constitution, government & municipal affairs,
   the intelligence-leadership dispute. (Rubio/Boulos/initiative items cluster here.)
@@ -76,12 +79,18 @@ Direct feedback from the human editor on real output. These override anything be
 - **Human Rights & Rule of Law** — migration, prosecutions/detentions, judiciary,
   health, education, vulnerable groups, civil liberties.
 - **Economy** — banking/CBL, oil & energy (NOC/Eni/Brega), markets, reconstruction
-  & infrastructure, electricity.
-- **Environment** — weather EVENTS, climate, agriculture, water (not daily forecasts).
+  & infrastructure, electricity. **Government building/administrative projects
+  (building-permit rules, ministerial-complex works) go under Infrastructure here,
+  not Politics** (editor's routing).
+- **Environment** — weather EVENTS, climate, agriculture (incl. air-quality rankings,
+  farming symposia), water (not daily forecasts).
 - **Regional & International** — foreign relations, bilateral visits (India,
-  Mauritania…), maritime/EEZ, regional security.
-- **Varieties** — culture, heritage, society; tagged Analysis/Opinion/Feature pieces
-  (with first-paragraph summary). NO sport.
+  Mauritania…), maritime/EEZ, regional security; **Arab Parliament / Arab-League
+  items and third-country rankings that mention Libya** (editor moved both here).
+- **Varieties** — tagged Analysis/Opinion/Feature pieces (with first-paragraph
+  summary) are the CORE. NO sport. **Culture/heritage bullets are the first
+  candidates to cut** — the editor deleted the whole culture cluster on 2 July;
+  include only genuinely notable culture stories.
 
 ## Input
 
@@ -98,8 +107,11 @@ Direct feedback from the human editor on real output. These override anything be
 | `section` | publisher's own category, if any (a hint, not authoritative) |
 
 Coverage date = the span of `published_at` (current data: **18–21 June 2026**).
-Title the report `Libya News Headlines – 18-21 June` (collapse a multi-day window
-to a `D-D Month` range; a single day is just `D Month`).
+**Title convention (editor's practice): a DAILY report is titled with the single
+report day** — `Libya News Headlines – 2 July` — even when the scraped data spans
+yesterday + this morning (the editor retitled our "1-2 July" to "2 July"). Use a
+`D-D Month` range title only for a genuine multi-day catch-up window (weekend/gap,
+e.g. `25-28 June`).
 
 ## Editorial rules
 

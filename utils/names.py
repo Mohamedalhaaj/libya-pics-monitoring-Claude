@@ -19,6 +19,8 @@ NAME_NORMALIZATIONS: dict[str, str] = {
     "al-koni": "Koni",
     "al koni": "Koni",
     "al-abani": "Abani",
+    "buzriba": "Abu Zriba",
+    "bouzriba": "Abu Zriba",
     "aguila": "Agila",
     "aqila": "Agila",
     "ageela": "Agila",

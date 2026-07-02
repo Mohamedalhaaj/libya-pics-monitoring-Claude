@@ -114,7 +114,8 @@ only when it leads the bullet. Named private figures: `[Egyptian Businessman]`
 ### Verified this cycle (30 Jun–1 Jul) — merge into the tables above
 | Surname | Role tag | Note |
 |---|---|---|
-| Mlegta | `[Head of General Intelligence]` | Abdelmajid Mlegta, newly appointed head of the General Intelligence Service |
+| Mlegta | `[PC-appointed head of General Intelligence]` | Abdelmajid Mlegta; the editor's form flags that the appointment is disputed (plain `[Head of General Intelligence]` also seen) |
+| Abu Zriba | `[HoR-appointed MoI]` | eastern government Interior Minister — spell **Abu Zriba**, not Buzriba |
 | Shakshak | `[Audit Bureau Head]` | head of the State Audit Bureau |
 | Al-Sagheer (Sagheer) | `[HoR Member]` | MP Al-Hadi al-Sagheer (source: النائب) |
 | Kilani | `[Social Affairs Minister]` | |

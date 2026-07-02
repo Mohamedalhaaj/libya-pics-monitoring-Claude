@@ -120,6 +120,10 @@ OUTLET_ALIASES: dict[str, str] = {
     "المنظمة العربية للتربية و الثقافة و العلوم": "ALECSO",
     "بيلبورد عربية": "Billboard Arabia",
     "وكالة الأنباء القطرية": "Qatar News Agency",
+    "ترك برس": "Turk Press",
+    "جريدة المال": "Al-Mal",
+    "نون بوست": "Noon Post",
+    "وطنى": "Watani",
 }
 
 # Normalised lookup (casefolded). Arabic casefolds to itself, so this is safe.
